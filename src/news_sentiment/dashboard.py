@@ -16,7 +16,24 @@ DEFAULT_WATCHLIST = [
     "TSLA",
     "BRK-B",
     "LLY",
+    "JPM",
+    "WMT",
 ]
+
+COMPANY_NAMES = {
+    "AAPL": "Apple",
+    "MSFT": "Microsoft",
+    "NVDA": "NVIDIA",
+    "GOOGL": "Alphabet",
+    "AMZN": "Amazon",
+    "META": "Meta Platforms",
+    "AVGO": "Broadcom",
+    "TSLA": "Tesla",
+    "BRK-B": "Berkshire Hathaway",
+    "LLY": "Eli Lilly",
+    "JPM": "JPMorgan Chase",
+    "WMT": "Walmart",
+}
 
 SECTOR_NAMES = {
     "XLK": "Technology",
@@ -63,6 +80,7 @@ def build_dashboard_data(
         "stocks": [
             {
                 "ticker": r.ticker,
+                "company_name": COMPANY_NAMES.get(r.ticker, r.ticker),
                 "rating": r.rating,
                 "avg_score": r.avg_score,
                 "num_headlines": len(r.scored_headlines),

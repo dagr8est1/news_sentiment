@@ -1,8 +1,9 @@
 {
-  "generated_at": "2026-11-07T21:01:13.490540+00:00",
+  "generated_at": "2026-11-07T22:20:57.014930+00:00",
   "stocks": [
     {
       "ticker": "AAPL",
+      "company_name": "Apple",
       "rating": "HOLD",
       "avg_score": 0.0,
       "num_headlines": 10,
@@ -14,8 +15,9 @@
     },
     {
       "ticker": "MSFT",
+      "company_name": "Microsoft",
       "rating": "HOLD",
-      "avg_score": -0.2,
+      "avg_score": -0.1,
       "num_headlines": 10,
       "price": 530.6099853515625,
       "change_1d": -0.009926683329770586,
@@ -25,8 +27,9 @@
     },
     {
       "ticker": "NVDA",
+      "company_name": "NVIDIA",
       "rating": "HOLD",
-      "avg_score": 0.0,
+      "avg_score": 0.2,
       "num_headlines": 10,
       "price": 186.63999938964844,
       "change_1d": 0.027753266061345372,
@@ -36,8 +39,9 @@
     },
     {
       "ticker": "GOOGL",
+      "company_name": "Alphabet",
       "rating": "HOLD",
-      "avg_score": -0.1,
+      "avg_score": -0.2,
       "num_headlines": 10,
       "price": 284.7799987792969,
       "change_1d": 0.007821040442350971,
@@ -47,8 +51,9 @@
     },
     {
       "ticker": "AMZN",
+      "company_name": "Amazon",
       "rating": "HOLD",
-      "avg_score": 0.0,
+      "avg_score": -0.1,
       "num_headlines": 10,
       "price": 259.29998779296875,
       "change_1d": -0.003497189546875933,
@@ -58,8 +63,9 @@
     },
     {
       "ticker": "META",
+      "company_name": "Meta Platforms",
       "rating": "HOLD",
-      "avg_score": -0.2,
+      "avg_score": -0.1,
       "num_headlines": 10,
       "price": 610.1500244140625,
       "change_1d": 0.0083790691826234,
@@ -69,6 +75,7 @@
     },
     {
       "ticker": "AVGO",
+      "company_name": "Broadcom",
       "rating": "HOLD",
       "avg_score": -0.1,
       "num_headlines": 10,
@@ -80,6 +87,7 @@
     },
     {
       "ticker": "TSLA",
+      "company_name": "Tesla",
       "rating": "HOLD",
       "avg_score": -0.1,
       "num_headlines": 10,
@@ -91,6 +99,7 @@
     },
     {
       "ticker": "BRK-B",
+      "company_name": "Berkshire Hathaway",
       "rating": "SELL",
       "avg_score": -0.3,
       "num_headlines": 10,
@@ -102,14 +111,39 @@
     },
     {
       "ticker": "LLY",
+      "company_name": "Eli Lilly",
       "rating": "HOLD",
-      "avg_score": 0.2,
+      "avg_score": 0.1,
       "num_headlines": 10,
       "price": 1354.0,
       "change_1d": -0.007862346854184682,
       "change_1w": -0.04482415826823675,
       "change_qtd": 0.17018706694803845,
       "change_ytd": 0.265996693926611
+    },
+    {
+      "ticker": "JPM",
+      "company_name": "JPMorgan Chase",
+      "rating": "HOLD",
+      "avg_score": 0.2,
+      "num_headlines": 10,
+      "price": 334.489990234375,
+      "change_1d": -0.008448467820166118,
+      "change_1w": -0.007565921688513723,
+      "change_qtd": 0.016107246416043577,
+      "change_ytd": 0.058072525375289785
+    },
+    {
+      "ticker": "WMT",
+      "company_name": "Walmart",
+      "rating": "BUY",
+      "avg_score": 0.3,
+      "num_headlines": 10,
+      "price": 125.5199966430664,
+      "change_1d": -0.017225215757985,
+      "change_1w": 0.01627394115513763,
+      "change_qtd": 0.20785218297449776,
+      "change_ytd": 0.13382384369093217
     }
   ],
   "sectors": [
@@ -147,7 +181,7 @@
       "change_1d": -0.00016229329964499115,
       "change_1w": -0.11996569714222392,
       "change_qtd": 0.0019512021444677338,
-      "change_ytd": 0.4055295854198774
+      "change_ytd": 0.40552946312216404
     },
     {
       "ticker": "XLV",
@@ -183,7 +217,7 @@
       "change_1d": -0.012821897741866439,
       "change_1w": 0.007380940232881684,
       "change_qtd": 0.11761790988094642,
-      "change_ytd": 0.18197076448411387
+      "change_ytd": 0.18197088280875612
     },
     {
       "ticker": "XLI",
@@ -219,7 +253,7 @@
       "change_1d": -0.0039260547792298985,
       "change_1w": -0.00690764989529126,
       "change_qtd": 0.09355990288770852,
-      "change_ytd": 0.031395130537777656
+      "change_ytd": 0.03139522462503351
     },
     {
       "ticker": "XLRE",
