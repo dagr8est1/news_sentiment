@@ -215,6 +215,25 @@
   .rating-pill.hold { color: var(--hold); background: color-mix(in srgb, var(--hold) 16%, transparent); }
   .rating-pill.sell { color: var(--sell); background: color-mix(in srgb, var(--sell) 16%, transparent); }
 
+  .methodology {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 0.85rem;
+    margin-bottom: 24px;
+  }
+  .methodology summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .methodology p {
+    margin: 10px 0 0;
+    max-width: 68ch;
+  }
+  .methodology p:first-of-type { margin-top: 12px; }
+
   .load-error {
     border: 1px solid var(--sell);
     background: color-mix(in srgb, var(--sell) 10%, transparent);
@@ -253,6 +272,32 @@
     average score — green toward BUY, red toward SELL, stronger tint the
     further from zero.
   </p>
+
+  <details class="methodology">
+    <summary>How these scores are calculated</summary>
+    <p>
+      <strong>FinBERT</strong> is a classifier, not a generator: each
+      headline goes in as plain text and the model directly outputs one of
+      three labels — positive, neutral, negative — plus a calibrated
+      confidence. There's no prompt and nothing to parse; the label
+      <em>is</em> the answer.
+    </p>
+    <p>
+      An <strong>LLM</strong> like Qwen works differently: it's asked a
+      question — "classify the sentiment of this headline as Positive,
+      Negative, or Neutral" — and replies in free-form text. The code then
+      has to search that reply for whichever of the three words appears
+      first and use that as the label, since the model itself never
+      outputs a structured score.
+    </p>
+    <p>
+      This dashboard currently scores with FinBERT only, since it's fast
+      enough to run unattended across 21 tickers every day. See the
+      <a href="pipeline-explainer.html">pipeline explainer</a> for the full
+      mechanics, including <code>--compare</code> mode, which runs both
+      models side by side on demand.
+    </p>
+  </details>
 
   <div id="stale-banner" class="stale-banner"></div>
 
