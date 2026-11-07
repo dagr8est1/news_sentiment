@@ -63,6 +63,16 @@ more often. Swap `QWEN_MODEL` in `sentiment.py` for a larger Qwen checkpoint
 (e.g. `Qwen/Qwen2.5-3B-Instruct`) if you want sharper judgments at the cost
 of slower local inference.
 
+**How Qwen scoring works internally:** unlike FinBERT, which is a classifier
+that returns a label directly, Qwen is a text-generation model — it replies
+with free-form text. `build_sentiment_prompt()` asks it to respond with one
+word (Positive/Negative/Neutral), and `parse_llm_sentiment_label()` then
+scans that reply for whichever of the three label words appears first
+(case-insensitive) and uses that as the label. If the model's reply doesn't
+contain any of the three words, parsing raises a `ValueError` rather than
+guessing. Because Qwen doesn't expose a calibrated class probability the
+way FinBERT's classifier does, its `confidence` is always reported as `1.0`.
+
 ## Project structure
 
 Each module has one job, so the pipeline reads top to bottom:
