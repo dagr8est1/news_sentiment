@@ -12,6 +12,7 @@ dependencies = [
 
 [project.scripts]
 news-sentiment = "news_sentiment.cli:main"
+news-sentiment-dashboard = "news_sentiment.dashboard_cli:main"
 
 [dependency-groups]
 dev = ["pytest>=8.3.0"]

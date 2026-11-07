@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sentiment Dashboard</title>
+<style>
+  /*
+    design plan (shared with docs/pipeline-explainer.html)
+    color: paper/ink technical-doc palette, teal accent, BUY/HOLD/SELL as their own semantic hues
+    type: IBM Plex Sans for prose/labels, IBM Plex Mono for tickers, scores, and timestamps
+    layout: a header strip (freshness + totals), then two scannable card grids sorted most-bullish-first
+  */
+  :root {
+    --bg: #faf8f3;
+    --surface: #ffffff;
+    --fg: #1d1d1b;
+    --muted: #6b6a63;
+    --border: #ddd9cd;
+    --accent: #0f6e63;
+    --accent-soft: #e4f1ee;
+    --buy: #1f7a3d;
+    --hold: #9a6b0a;
+    --sell: #a3271f;
+    --warn-bg: #fbeedb;
+    --warn-fg: #7a4a0a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17181a;
+      --surface: #1f2123;
+      --fg: #ebe9e3;
+      --muted: #9b9a93;
+      --border: #35373a;
+      --accent: #4fd3c1;
+      --accent-soft: #163330;
+      --buy: #4ec97a;
+      --hold: #e0a83f;
+      --sell: #f0665e;
+      --warn-bg: #352a16;
+      --warn-fg: #e0a83f;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17181a;
+    --surface: #1f2123;
+    --fg: #ebe9e3;
+    --muted: #9b9a93;
+    --border: #35373a;
+    --accent: #4fd3c1;
+    --accent-soft: #163330;
+    --buy: #4ec97a;
+    --hold: #e0a83f;
+    --sell: #f0665e;
+    --warn-bg: #352a16;
+    --warn-fg: #e0a83f;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    line-height: 1.5;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding-block: 32px 80px;
+  }
+  h1, h2 { text-wrap: balance; }
+  h1 {
+    font-size: clamp(1.5rem, 4vw, 1.9rem);
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .lede { color: var(--muted); margin: 0 0 24px; max-width: 60ch; }
+  .lede a { color: var(--accent); }
+
+  header.top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+  .freshness {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .totals {
+    display: flex;
+    gap: 14px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.82rem;
+  }
+  .totals span { font-variant-numeric: tabular-nums; }
+  .totals .buy { color: var(--buy); }
+  .totals .hold { color: var(--hold); }
+  .totals .sell { color: var(--sell); }
+
+  .stale-banner {
+    display: none;
+    background: var(--warn-bg);
+    color: var(--warn-fg);
+    border: 1px solid var(--warn-fg);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 0.88rem;
+    margin-bottom: 24px;
+  }
+  .stale-banner.visible { display: block; }
+
+  section { margin-bottom: 40px; }
+  h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0 0 14px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    min-width: 0;
+  }
+  .card .ticker {
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 600;
+    font-size: 0.98rem;
+  }
+  .card .sector-name {
+    display: block;
+    font-size: 0.74rem;
+    color: var(--muted);
+    margin-top: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+  .card .score {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  .card .headlines {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .rating-pill {
+    display: inline-block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .rating-pill.buy { color: var(--buy); background: color-mix(in srgb, var(--buy) 16%, transparent); }
+  .rating-pill.hold { color: var(--hold); background: color-mix(in srgb, var(--hold) 16%, transparent); }
+  .rating-pill.sell { color: var(--sell); background: color-mix(in srgb, var(--sell) 16%, transparent); }
+
+  .load-error {
+    border: 1px solid var(--sell);
+    background: color-mix(in srgb, var(--sell) 10%, transparent);
+    color: var(--fg);
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 0.9rem;
+  }
+  .load-error code {
+    font-family: "IBM Plex Mono", monospace;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0 0.35em;
+  }
+
+  footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+  footer a { color: var(--accent); }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+</head>
+<body>
+<main>
+  <h1>Sentiment Dashboard</h1>
+  <p class="lede">
+    FinBERT sentiment over recent headlines for a fixed watchlist and the
+    11 SPDR sector ETFs. See the <a href="pipeline-explainer.html">pipeline explainer</a>
+    for how each rating is computed.
+  </p>
+
+  <div id="stale-banner" class="stale-banner"></div>
+
+  <header class="top" id="top-stats" hidden>
+    <span class="freshness" id="freshness"></span>
+    <span class="totals" id="totals"></span>
+  </header>
+
+  <div id="content">
+    <p class="lede">Loading…</p>
+  </div>
+
+  <footer>
+    Generated by <code>news-sentiment-dashboard</code>. Thresholds and scoring:
+    see <a href="pipeline-explainer.html">pipeline-explainer.html</a>.
+  </footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  function fmtScore(n) {
+    const s = n.toFixed(2);
+    return n > 0 ? "+" + s : s;
+  }
+
+  function ratingPill(rating) {
+    const span = document.createElement("span");
+    span.className = "rating-pill " + rating.toLowerCase();
+    span.textContent = rating;
+    return span;
+  }
+
+  function renderCard(item, isSector) {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const ticker = document.createElement("div");
+    ticker.className = "ticker";
+    ticker.textContent = item.ticker;
+    card.appendChild(ticker);
+
+    if (isSector) {
+      const sector = document.createElement("span");
+      sector.className = "sector-name";
+      sector.textContent = item.sector_name;
+      card.appendChild(sector);
+    }
+
+    const row = document.createElement("div");
+    row.className = "card-row";
+    row.appendChild(ratingPill(item.rating));
+    const score = document.createElement("span");
+    score.className = "score";
+    score.textContent = fmtScore(item.avg_score);
+    row.appendChild(score);
+    card.appendChild(row);
+
+    const headlines = document.createElement("div");
+    headlines.className = "headlines";
+    headlines.textContent = item.num_headlines + (item.num_headlines === 1 ? " headline" : " headlines");
+    card.appendChild(headlines);
+
+    return card;
+  }
+
+  function renderSection(title, items, isSector) {
+    const section = document.createElement("section");
+    const h2 = document.createElement("h2");
+    h2.textContent = title;
+    section.appendChild(h2);
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    const sorted = items.slice().sort((a, b) => b.avg_score - a.avg_score);
+    sorted.forEach((item) => grid.appendChild(renderCard(item, isSector)));
+    section.appendChild(grid);
+
+    return section;
+  }
+
+  function renderTotals(items) {
+    const counts = { BUY: 0, HOLD: 0, SELL: 0 };
+    items.forEach((item) => { counts[item.rating]++; });
+    const totals = document.getElementById("totals");
+    totals.innerHTML = "";
+    ["BUY", "HOLD", "SELL"].forEach((rating) => {
+      const span = document.createElement("span");
+      span.className = rating.toLowerCase();
+      span.textContent = rating + " " + counts[rating];
+      totals.appendChild(span);
+    });
+  }
+
+  function renderFreshness(generatedAt) {
+    const date = new Date(generatedAt);
+    const freshness = document.getElementById("freshness");
+    const formatted = date.toLocaleString(undefined, {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+    freshness.textContent = "Updated " + formatted;
+
+    const hoursOld = (Date.now() - date.getTime()) / 36e5;
+    if (hoursOld > 36) {
+      const banner = document.getElementById("stale-banner");
+      const days = Math.floor(hoursOld / 24);
+      banner.textContent = "This data is " + days + (days === 1 ? " day" : " days") +
+        " old. The daily refresh job isn't running yet — see the README for setup.";
+      banner.classList.add("visible");
+    }
+  }
+
+  function render(data) {
+    document.getElementById("top-stats").hidden = false;
+    renderFreshness(data.generated_at);
+    renderTotals(data.stocks.concat(data.sectors));
+
+    const content = document.getElementById("content");
+    content.innerHTML = "";
+    content.appendChild(renderSection("Watchlist", data.stocks, false));
+    content.appendChild(renderSection("Sector ETFs", data.sectors, true));
+  }
+
+  function renderError(detail) {
+    const content = document.getElementById("content");
+    content.innerHTML = "";
+    const box = document.createElement("div");
+    box.className = "load-error";
+    box.innerHTML = "<strong>Couldn't load dashboard-data.json.</strong><br>" +
+      "This page reads data from a file next to it, which only works when served " +
+      "over HTTP (GitHub Pages, or a local server like <code>python3 -m http.server</code> " +
+      "from the <code>docs/</code> folder) — not when opened directly as a <code>file://</code> URL.<br>" +
+      "Detail: " + detail;
+    content.appendChild(box);
+  }
+
+  fetch("dashboard-data.json")
+    .then((res) => {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    })
+    .then(render)
+    .catch((err) => renderError(err.message));
+})();
+</script>
+</body>
+</html>

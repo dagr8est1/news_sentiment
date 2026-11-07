@@ -73,6 +73,48 @@ contain any of the three words, parsing raises a `ValueError` rather than
 guessing. Because Qwen doesn't expose a calibrated class probability the
 way FinBERT's classifier does, its `confidence` is always reported as `1.0`.
 
+## Dashboard
+
+```bash
+uv run news-sentiment-dashboard
+```
+
+Scores a fixed watchlist (`AAPL`, `MSFT`, `NVDA`, `GOOGL`, `AMZN`, `META`,
+`AVGO`, `TSLA`, `BRK-B`, `LLY` — edit `DEFAULT_WATCHLIST` in `dashboard.py`
+to change it) and the 11 SPDR sector ETFs with FinBERT only (fast and
+reliable enough to run unattended; `--compare`-style LLM scoring stays a
+manual tool, not part of the automated job). Writes `docs/dashboard-data.json`,
+which `docs/dashboard.html` reads and renders as cards grouped into
+Watchlist and Sector ETFs, sorted most-bullish-first.
+
+- `--watchlist` / `--sector-etfs`: override either ticker list.
+- `--count`: headlines per ticker (default 10, lower than the plain CLI's
+  default since this runs across 21 tickers at once).
+- `--output`: where to write the JSON (default `docs/dashboard-data.json`).
+
+`docs/dashboard.html` loads its data with `fetch()`, so it only works when
+served over HTTP — open it via GitHub Pages once that's set up, or locally
+with `python3 -m http.server` from `docs/`. Opening the file directly
+(`file://`) won't work; the page explains this if the fetch fails.
+
+### Automating the daily refresh
+
+`.github/workflows/dashboard.yml` runs `news-sentiment-dashboard` on a cron
+schedule (weekdays, after US market close) and commits the updated
+`dashboard-data.json` back to `main`. It needs no secrets — FinBERT and
+`yfinance` are both free — but two things still need to be done once, by
+hand, in the repo's GitHub settings:
+
+1. **Enable GitHub Pages**, pointed at the `main` branch, `/docs` folder
+   (Settings → Pages). This is what actually serves `dashboard.html`.
+2. **Merge this branch**, so the scheduled workflow exists on `main` —
+   GitHub only runs `schedule`-triggered workflows from the default branch.
+
+Until then, `dashboard.html` still works locally (`python3 -m http.server`
+in `docs/`) against whatever `dashboard-data.json` is currently committed;
+it just won't refresh itself. The page shows a banner if the data is more
+than 36 hours old, as a reminder the cron isn't running yet.
+
 ## Project structure
 
 Each module has one job, so the pipeline reads top to bottom:
@@ -86,6 +128,8 @@ Each module has one job, so the pipeline reads top to bottom:
 | `pipeline.py` | Wires a news source and scorer(s) together: fetch → score → rate, per ticker. `analyze_tickers_multi` fetches each ticker's headlines once and scores them with multiple models, so results are directly comparable. |
 | `report.py` | Formats `TickerRating`s as a console table or CSV file, including side-by-side model comparisons. |
 | `cli.py` | Argument parsing and the `news-sentiment` entry point. |
+| `dashboard.py` | Builds the watchlist + sector-ETF JSON blob behind the dashboard, reusing `pipeline.analyze_tickers`. |
+| `dashboard_cli.py` | Argument parsing and the `news-sentiment-dashboard` entry point. |
 
 Each piece that talks to the outside world (`news_source.py`, `sentiment.py`)
 takes its dependency as a constructor argument, so the rest of the pipeline

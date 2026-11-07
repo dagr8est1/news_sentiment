@@ -1,0 +1,144 @@
+{
+  "generated_at": "2026-11-07T20:45:42.477783+00:00",
+  "stocks": [
+    {
+      "ticker": "AAPL",
+      "rating": "HOLD",
+      "avg_score": 0.0,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "MSFT",
+      "rating": "HOLD",
+      "avg_score": -0.2,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "NVDA",
+      "rating": "HOLD",
+      "avg_score": 0.0,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "GOOGL",
+      "rating": "HOLD",
+      "avg_score": -0.1,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "AMZN",
+      "rating": "HOLD",
+      "avg_score": 0.0,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "META",
+      "rating": "HOLD",
+      "avg_score": -0.2,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "AVGO",
+      "rating": "HOLD",
+      "avg_score": -0.1,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "TSLA",
+      "rating": "HOLD",
+      "avg_score": -0.1,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "BRK-B",
+      "rating": "SELL",
+      "avg_score": -0.3,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "LLY",
+      "rating": "HOLD",
+      "avg_score": 0.2,
+      "num_headlines": 10
+    }
+  ],
+  "sectors": [
+    {
+      "ticker": "XLK",
+      "sector_name": "Technology",
+      "rating": "BUY",
+      "avg_score": 0.3,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "XLF",
+      "sector_name": "Financials",
+      "rating": "SELL",
+      "avg_score": -0.3,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "XLE",
+      "sector_name": "Energy",
+      "rating": "HOLD",
+      "avg_score": -0.2,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "XLV",
+      "sector_name": "Health Care",
+      "rating": "HOLD",
+      "avg_score": -0.1,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "XLY",
+      "sector_name": "Consumer Discretionary",
+      "rating": "SELL",
+      "avg_score": -0.4,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "XLP",
+      "sector_name": "Consumer Staples",
+      "rating": "HOLD",
+      "avg_score": -0.1,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "XLI",
+      "sector_name": "Industrials",
+      "rating": "SELL",
+      "avg_score": -0.3,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "XLB",
+      "sector_name": "Materials",
+      "rating": "HOLD",
+      "avg_score": 0.0,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "XLU",
+      "sector_name": "Utilities",
+      "rating": "HOLD",
+      "avg_score": -0.1,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "XLRE",
+      "sector_name": "Real Estate",
+      "rating": "SELL",
+      "avg_score": -0.3,
+      "num_headlines": 10
+    },
+    {
+      "ticker": "XLC",
+      "sector_name": "Communication Services",
+      "rating": "HOLD",
+      "avg_score": 0.2,
+      "num_headlines": 10
+    }
+  ]
+}
