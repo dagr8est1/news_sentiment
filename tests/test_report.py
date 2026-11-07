@@ -1,7 +1,7 @@
 import csv
 
 from news_sentiment.models import Headline, ScoredHeadline, TickerRating
-from news_sentiment.report import format_report, save_csv
+from news_sentiment.report import format_headlines, format_report, save_csv
 
 
 def _rating(ticker: str, rating: str, avg_score: float, n_headlines: int) -> TickerRating:
@@ -30,6 +30,30 @@ def test_format_report_handles_multiple_tickers():
     assert "AAPL" in output
     assert "MSFT" in output
     assert "SELL" in output
+
+
+def test_format_headlines_lists_each_headline_with_label_and_ticker():
+    headline = Headline(
+        ticker="AAPL", title="Apple beats earnings", publisher="Reuters", url=None, published_at=None
+    )
+    scored = ScoredHeadline(headline=headline, label="positive", confidence=0.91, sentiment_score=1)
+    rating = TickerRating(ticker="AAPL", rating="BUY", avg_score=1.0, scored_headlines=[scored])
+
+    output = format_headlines([rating])
+
+    assert "AAPL" in output
+    assert "Apple beats earnings" in output
+    assert "positive" in output
+    assert "Reuters" in output
+
+
+def test_format_headlines_handles_ticker_with_no_headlines():
+    rating = TickerRating(ticker="AAPL", rating="HOLD", avg_score=0.0, scored_headlines=[])
+
+    output = format_headlines([rating])
+
+    assert "AAPL" in output
+    assert "no headlines" in output.lower()
 
 
 def test_save_csv_writes_one_row_per_ticker(tmp_path):
