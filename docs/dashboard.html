@@ -216,7 +216,9 @@
   <p class="lede">
     FinBERT sentiment over recent headlines for a fixed watchlist and the
     11 SPDR sector ETFs. See the <a href="pipeline-explainer.html">pipeline explainer</a>
-    for how each rating is computed.
+    for how each rating is computed. Card background is a heatmap of the
+    average score — green toward BUY, red toward SELL, stronger tint the
+    further from zero.
   </p>
 
   <div id="stale-banner" class="stale-banner"></div>
@@ -252,9 +254,22 @@
     return span;
   }
 
+  // Tints the card toward --buy or --sell by how far avg_score sits from 0.
+  // avg_score can in theory reach ±1, but with ~10 headlines per ticker it
+  // needs near-unanimous sentiment to get past ±0.5 in practice, so ±0.5 is
+  // treated as full intensity rather than ±1 — otherwise typical scores
+  // would barely tint at all. Capped at 32% so body text stays legible.
+  function heatBackground(score) {
+    const normalized = Math.max(-0.5, Math.min(0.5, score)) / 0.5;
+    const hueVar = normalized >= 0 ? "--buy" : "--sell";
+    const pct = Math.round(Math.abs(normalized) * 32);
+    return "color-mix(in srgb, var(" + hueVar + ") " + pct + "%, var(--surface))";
+  }
+
   function renderCard(item, isSector) {
     const card = document.createElement("div");
     card.className = "card";
+    card.style.background = heatBackground(item.avg_score);
 
     const ticker = document.createElement("div");
     ticker.className = "ticker";
