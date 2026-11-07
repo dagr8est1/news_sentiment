@@ -128,8 +128,14 @@
   }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    grid-template-columns: repeat(6, 1fr);
     gap: 6px;
+  }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
   }
   .card {
     background: var(--surface);
@@ -206,11 +212,6 @@
   .returns .ret.pos { color: var(--buy); }
   .returns .ret.neg { color: var(--sell); }
   .returns .ret.na { color: var(--muted); }
-  .card .headlines {
-    font-size: 0.64rem;
-    color: var(--muted);
-    margin-left: auto;
-  }
   .rating-pill {
     display: inline-block;
     font-family: "IBM Plex Mono", monospace;
@@ -432,13 +433,6 @@
     returns.appendChild(returnChip("1W", item.change_1w));
     returns.appendChild(returnChip("QTD", item.change_qtd));
     returns.appendChild(returnChip("YTD", item.change_ytd));
-
-    const headlines = document.createElement("span");
-    headlines.className = "headlines";
-    headlines.textContent = item.num_headlines + "h";
-    headlines.title = item.num_headlines + (item.num_headlines === 1 ? " headline" : " headlines") + " scored";
-    returns.appendChild(headlines);
-
     card.appendChild(returns);
 
     return card;
@@ -472,14 +466,15 @@
     });
   }
 
-  function renderFreshness(generatedAt) {
+  function renderFreshness(generatedAt, headlineCount) {
     const date = new Date(generatedAt);
     const freshness = document.getElementById("freshness");
     const formatted = date.toLocaleString(undefined, {
       dateStyle: "medium",
       timeStyle: "short",
     });
-    freshness.textContent = "Updated " + formatted;
+    freshness.textContent = "Updated " + formatted +
+      (headlineCount ? " · sentiment based on " + headlineCount + " headlines per ticker" : "");
 
     const hoursOld = (Date.now() - date.getTime()) / 36e5;
     if (hoursOld > 36) {
@@ -493,8 +488,10 @@
 
   function render(data) {
     document.getElementById("top-stats").hidden = false;
-    renderFreshness(data.generated_at);
-    renderTotals(data.stocks.concat(data.sectors));
+    const all = data.stocks.concat(data.sectors);
+    const headlineCount = all.length ? all[0].num_headlines : null;
+    renderFreshness(data.generated_at, headlineCount);
+    renderTotals(all);
 
     const content = document.getElementById("content");
     content.innerHTML = "";
