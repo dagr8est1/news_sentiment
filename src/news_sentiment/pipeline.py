@@ -22,3 +22,15 @@ def analyze_tickers(
     tickers: list[str], news_source: NewsSource, scorer: Scorer, count: int = 20
 ) -> list[TickerRating]:
     return [analyze_ticker(ticker, news_source, scorer, count) for ticker in tickers]
+
+
+def analyze_tickers_multi(
+    tickers: list[str], news_source: NewsSource, scorers: dict[str, Scorer], count: int = 20
+) -> dict[str, dict[str, TickerRating]]:
+    results: dict[str, dict[str, TickerRating]] = {}
+    for ticker in tickers:
+        headlines = news_source.fetch(ticker, count)
+        results[ticker] = {
+            name: aggregate_rating(ticker, scorer.score_all(headlines)) for name, scorer in scorers.items()
+        }
+    return results
