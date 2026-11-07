@@ -177,6 +177,10 @@
     font-variant-numeric: tabular-nums;
     color: var(--muted);
   }
+  .card .score .label {
+    font-size: 0.72rem;
+    margin-right: 4px;
+  }
   .returns {
     display: flex;
     gap: 10px;
@@ -291,6 +295,16 @@
       outputs a structured score.
     </p>
     <p>
+      Each headline's label becomes a number — positive = +1, neutral = 0,
+      negative = −1 — and the number on every card labeled
+      <strong>sentiment</strong> (next to the rating pill) is the average of
+      that across all headlines fetched for the ticker, so it ranges from
+      −1 to +1. It's what decides BUY/HOLD/SELL: above +0.2 is BUY, below
+      −0.2 is SELL, otherwise HOLD. It isn't a percentage and isn't related
+      to the four price returns below it on the card — those come straight
+      from Yahoo Finance.
+    </p>
+    <p>
       This dashboard currently scores with FinBERT only, since it's fast
       enough to run unattended across 21 tickers every day. See the
       <a href="pipeline-explainer.html">pipeline explainer</a> for the full
@@ -399,7 +413,12 @@
     row.appendChild(ratingPill(item.rating));
     const score = document.createElement("span");
     score.className = "score";
-    score.textContent = fmtScore(item.avg_score);
+    score.title = "Sentiment score: average of FinBERT's per-headline rating (+1 to -1)";
+    const scoreLabel = document.createElement("span");
+    scoreLabel.className = "label";
+    scoreLabel.textContent = "sentiment";
+    score.appendChild(scoreLabel);
+    score.appendChild(document.createTextNode(fmtScore(item.avg_score)));
     row.appendChild(score);
     card.appendChild(row);
 
