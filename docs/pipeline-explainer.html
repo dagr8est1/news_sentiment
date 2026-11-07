@@ -15,6 +15,7 @@
     --border: #ddd9cd;
     --accent: #0f6e63;
     --accent-soft: #e4f1ee;
+    --qwen: #7a4fb5;
     --buy: #1f7a3d;
     --hold: #9a6b0a;
     --sell: #a3271f;
@@ -29,6 +30,7 @@
       --border: #35373a;
       --accent: #4fd3c1;
       --accent-soft: #163330;
+      --qwen: #c3a3f0;
       --buy: #4ec97a;
       --hold: #e0a83f;
       --sell: #f0665e;
@@ -44,6 +46,7 @@
     --border: #35373a;
     --accent: #4fd3c1;
     --accent-soft: #163330;
+    --qwen: #c3a3f0;
     --buy: #4ec97a;
     --hold: #e0a83f;
     --sell: #f0665e;
@@ -168,6 +171,30 @@
   .rating-pill.buy { color: var(--buy); background: color-mix(in srgb, var(--buy) 15%, transparent); }
   .rating-pill.hold { color: var(--hold); background: color-mix(in srgb, var(--hold) 15%, transparent); }
   .rating-pill.sell { color: var(--sell); background: color-mix(in srgb, var(--sell) 15%, transparent); }
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .legend .swatch {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend .swatch::before {
+    content: "";
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+    border: 1.5px solid currentColor;
+    background: color-mix(in srgb, currentColor 18%, transparent);
+  }
+  .legend .finbert { color: var(--accent); }
+  .legend .qwen { color: var(--qwen); }
   .callout {
     background: var(--accent-soft);
     border: 1px solid var(--accent);
@@ -310,36 +337,40 @@
 
       <!-- fan out to both scorers -->
       <circle cx="250" cy="130" r="3" fill="currentColor"/>
-      <line x1="250" y1="130" x2="300" y2="68" stroke="currentColor"/>
-      <line x1="250" y1="130" x2="300" y2="208" stroke="currentColor"/>
+      <line x1="250" y1="130" x2="300" y2="68" stroke="var(--accent)"/>
+      <line x1="250" y1="130" x2="300" y2="208" stroke="var(--qwen)"/>
 
-      <rect x="300" y="38" width="220" height="60" rx="6" fill="none" stroke="currentColor"/>
-      <text x="410" y="63" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600">FinbertSentimentScorer</text>
-      <text x="410" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" opacity="0.65">.score_all(headlines)</text>
+      <rect x="300" y="38" width="220" height="60" rx="6" fill="none" stroke="var(--accent)"/>
+      <text x="410" y="63" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="var(--accent)">FinbertSentimentScorer</text>
+      <text x="410" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" opacity="0.7">.score_all(headlines)</text>
 
-      <rect x="300" y="178" width="220" height="60" rx="6" fill="none" stroke="currentColor"/>
-      <text x="410" y="203" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600">QwenSentimentScorer</text>
-      <text x="410" y="220" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" opacity="0.65">.score_all(headlines)</text>
+      <rect x="300" y="178" width="220" height="60" rx="6" fill="none" stroke="var(--qwen)"/>
+      <text x="410" y="203" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="var(--qwen)">QwenSentimentScorer</text>
+      <text x="410" y="220" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" opacity="0.7">.score_all(headlines)</text>
 
-      <line x1="520" y1="68" x2="556" y2="68" stroke="currentColor" marker-end="url(#arrow2)"/>
-      <line x1="520" y1="208" x2="556" y2="208" stroke="currentColor" marker-end="url(#arrow2)"/>
+      <line x1="520" y1="68" x2="556" y2="68" stroke="var(--accent)" marker-end="url(#arrow2)"/>
+      <line x1="520" y1="208" x2="556" y2="208" stroke="var(--qwen)" marker-end="url(#arrow2)"/>
 
       <rect x="560" y="42" width="190" height="52" rx="6" fill="none" stroke="var(--accent)"/>
       <text x="655" y="64" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="var(--accent)">results["finbert"]</text>
       <text x="655" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" opacity="0.85" fill="var(--accent)">TickerRating</text>
 
-      <rect x="560" y="182" width="190" height="52" rx="6" fill="none" stroke="var(--accent)"/>
-      <text x="655" y="204" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="var(--accent)">results["qwen"]</text>
-      <text x="655" y="220" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" opacity="0.85" fill="var(--accent)">TickerRating</text>
+      <rect x="560" y="182" width="190" height="52" rx="6" fill="none" stroke="var(--qwen)"/>
+      <text x="655" y="204" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="var(--qwen)">results["qwen"]</text>
+      <text x="655" y="220" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" opacity="0.85" fill="var(--qwen)">TickerRating</text>
 
       <text x="430" y="146" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" opacity="0.65">never merged</text>
     </svg>
+    <div class="legend">
+      <span class="swatch finbert">FinBERT — classifier, calibrated confidence</span>
+      <span class="swatch qwen">Qwen — generative LLM, confidence fixed at 1.0</span>
+    </div>
   </figure>
   <figcaption>
     <code>analyze_tickers_multi</code> fetches each ticker's headlines once,
     then runs every scorer over that same list. The two results land in one
     dict keyed by model name and are never averaged together — that's the
-    "keep separate" part.
+    "keep separate" part. Color marks which model produced which box.
   </figcaption>
 
   <pre><code>def analyze_tickers_multi(tickers, news_source, scorers, count=20):
