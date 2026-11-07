@@ -1,6 +1,7 @@
 import json
 
 from news_sentiment.dashboard import (
+    COMPANY_NAMES,
     DEFAULT_SECTOR_ETFS,
     DEFAULT_WATCHLIST,
     SECTOR_NAMES,
@@ -44,9 +45,9 @@ def _headline(ticker: str) -> Headline:
     return Headline(ticker=ticker, title="t", publisher=None, url=None, published_at=None)
 
 
-def test_default_watchlist_has_ten_tickers():
-    assert len(DEFAULT_WATCHLIST) == 10
-    assert len(set(DEFAULT_WATCHLIST)) == 10
+def test_default_watchlist_has_twelve_tickers():
+    assert len(DEFAULT_WATCHLIST) == 12
+    assert len(set(DEFAULT_WATCHLIST)) == 12
 
 
 def test_default_sector_etfs_cover_all_eleven_spdr_sectors():
@@ -81,6 +82,7 @@ def test_build_dashboard_data_scores_each_watchlist_stock():
     assert data["stocks"] == [
         {
             "ticker": "AAPL",
+            "company_name": COMPANY_NAMES["AAPL"],
             "rating": "BUY",
             "avg_score": 1.0,
             "num_headlines": 1,
@@ -92,6 +94,7 @@ def test_build_dashboard_data_scores_each_watchlist_stock():
         },
         {
             "ticker": "MSFT",
+            "company_name": COMPANY_NAMES["MSFT"],
             "rating": "BUY",
             "avg_score": 1.0,
             "num_headlines": 1,
@@ -102,6 +105,17 @@ def test_build_dashboard_data_scores_each_watchlist_stock():
             "change_ytd": 0.04,
         },
     ]
+
+
+def test_build_dashboard_data_falls_back_to_ticker_for_unknown_company_name():
+    news_source = _FakeNewsSource({"ZZZZ": [_headline("ZZZZ")]})
+    scorer = _FakeScorer(sentiment_score=1)
+
+    data = build_dashboard_data(
+        ["ZZZZ"], [], news_source, scorer, _FakePriceSource(), generated_at="2026-11-07T00:00:00+00:00"
+    )
+
+    assert data["stocks"][0]["company_name"] == "ZZZZ"
 
 
 def test_build_dashboard_data_scores_each_sector_etf_with_its_name():

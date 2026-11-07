@@ -80,8 +80,8 @@ uv run news-sentiment-dashboard
 ```
 
 Scores a fixed watchlist (`AAPL`, `MSFT`, `NVDA`, `GOOGL`, `AMZN`, `META`,
-`AVGO`, `TSLA`, `BRK-B`, `LLY` — edit `DEFAULT_WATCHLIST` in `dashboard.py`
-to change it) and the 11 SPDR sector ETFs with FinBERT only (fast and
+`AVGO`, `TSLA`, `BRK-B`, `LLY`, `JPM`, `WMT` — edit `DEFAULT_WATCHLIST` in
+`dashboard.py` to change it) and the 11 SPDR sector ETFs with FinBERT only (fast and
 reliable enough to run unattended; `--compare`-style LLM scoring stays a
 manual tool, not part of the automated job). For each ticker it also pulls
 the current price and 1-day, 1-week, quarter-to-date, and year-to-date
