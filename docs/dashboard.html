@@ -165,7 +165,7 @@
     white-space: nowrap;
     flex-shrink: 0;
   }
-  .card .sector-name {
+  .card .subtitle {
     display: block;
     font-size: 0.64rem;
     color: var(--muted);
@@ -382,12 +382,12 @@
     ticker.className = "ticker";
     ticker.textContent = item.ticker;
     tickerBlock.appendChild(ticker);
-    if (isSector) {
-      const sector = document.createElement("span");
-      sector.className = "sector-name";
-      sector.textContent = item.sector_name;
-      tickerBlock.appendChild(sector);
-    }
+
+    const subtitle = document.createElement("span");
+    subtitle.className = "subtitle";
+    subtitle.textContent = isSector ? item.sector_name : item.company_name;
+    tickerBlock.appendChild(subtitle);
+
     header.appendChild(tickerBlock);
 
     const price = document.createElement("div");
