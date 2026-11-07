@@ -69,17 +69,17 @@
     padding-right: max(16px, env(safe-area-inset-right, 0px));
   }
   main {
-    max-width: 920px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding-block: 32px 80px;
+    padding-block: 12px 20px;
   }
   h1, h2 { text-wrap: balance; }
   h1 {
-    font-size: clamp(1.5rem, 4vw, 1.9rem);
+    font-size: clamp(1.15rem, 2.4vw, 1.4rem);
     font-weight: 600;
-    margin: 0 0 4px;
+    margin: 0 0 2px;
   }
-  .lede { color: var(--muted); margin: 0 0 24px; max-width: 60ch; }
+  .lede { color: var(--muted); margin: 0 0 8px; max-width: 80ch; font-size: 0.86rem; }
   .lede a { color: var(--accent); }
 
   header.top {
@@ -87,10 +87,10 @@
     flex-wrap: wrap;
     align-items: baseline;
     justify-content: space-between;
-    gap: 8px 20px;
-    padding-bottom: 16px;
+    gap: 6px 20px;
+    padding-bottom: 6px;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 28px;
+    margin-bottom: 8px;
   }
   .freshness {
     font-family: "IBM Plex Mono", monospace;
@@ -114,53 +114,57 @@
     color: var(--warn-fg);
     border: 1px solid var(--warn-fg);
     border-radius: 8px;
-    padding: 12px 14px;
-    font-size: 0.88rem;
-    margin-bottom: 24px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
   }
   .stale-banner.visible { display: block; }
 
-  section { margin-bottom: 40px; }
+  section { margin-bottom: 14px; }
   h2 {
-    font-size: 1.05rem;
+    font-size: 0.88rem;
     font-weight: 600;
-    margin: 0 0 14px;
+    margin: 0 0 6px;
   }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    gap: 6px;
   }
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 14px;
+    border-radius: 7px;
+    padding: 7px 9px;
     min-width: 0;
   }
   .card-header {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 8px;
+    gap: 6px;
+  }
+  .card .ticker-block {
+    min-width: 0;
+    overflow: hidden;
   }
   .card .ticker {
     font-family: "IBM Plex Mono", monospace;
     font-weight: 600;
-    font-size: 0.98rem;
+    font-size: 0.86rem;
   }
   .card .price {
     font-family: "IBM Plex Mono", monospace;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.78rem;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
+    flex-shrink: 0;
   }
   .card .sector-name {
     display: block;
-    font-size: 0.74rem;
+    font-size: 0.64rem;
     color: var(--muted);
-    margin-top: 1px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -169,50 +173,51 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 8px;
+    margin-top: 5px;
   }
   .card .score {
     font-family: "IBM Plex Mono", monospace;
-    font-size: 0.82rem;
+    font-size: 0.72rem;
     font-variant-numeric: tabular-nums;
     color: var(--muted);
   }
   .card .score .label {
-    font-size: 0.72rem;
-    margin-right: 4px;
+    font-size: 0.62rem;
+    margin-right: 3px;
   }
   .returns {
     display: flex;
-    gap: 10px;
+    align-items: baseline;
+    gap: 7px;
     flex-wrap: wrap;
-    margin-top: 8px;
-    padding-top: 8px;
+    margin-top: 5px;
+    padding-top: 5px;
     border-top: 1px solid var(--border);
   }
   .returns .ret {
     font-family: "IBM Plex Mono", monospace;
-    font-size: 0.72rem;
+    font-size: 0.64rem;
     font-variant-numeric: tabular-nums;
   }
   .returns .ret .label {
     color: var(--muted);
-    margin-right: 3px;
+    margin-right: 2px;
   }
   .returns .ret.pos { color: var(--buy); }
   .returns .ret.neg { color: var(--sell); }
   .returns .ret.na { color: var(--muted); }
   .card .headlines {
-    font-size: 0.72rem;
+    font-size: 0.64rem;
     color: var(--muted);
-    margin-top: 6px;
+    margin-left: auto;
   }
   .rating-pill {
     display: inline-block;
     font-family: "IBM Plex Mono", monospace;
-    font-size: 0.72rem;
+    font-size: 0.62rem;
     font-weight: 600;
-    letter-spacing: 0.04em;
-    padding: 2px 8px;
+    letter-spacing: 0.03em;
+    padding: 1px 6px;
     border-radius: 999px;
   }
   .rating-pill.buy { color: var(--buy); background: color-mix(in srgb, var(--buy) 16%, transparent); }
@@ -223,9 +228,9 @@
     background: var(--accent-soft);
     border: 1px solid var(--accent);
     border-radius: 8px;
-    padding: 14px 16px;
+    padding: 6px 14px;
     font-size: 0.85rem;
-    margin-bottom: 24px;
+    margin-bottom: 8px;
   }
   .methodology summary {
     cursor: pointer;
@@ -255,11 +260,11 @@
   }
 
   footer {
-    margin-top: 48px;
-    padding-top: 16px;
+    margin-top: 16px;
+    padding-top: 10px;
     border-top: 1px solid var(--border);
     color: var(--muted);
-    font-size: 0.82rem;
+    font-size: 0.78rem;
   }
   footer a { color: var(--accent); }
 </style>
@@ -270,11 +275,9 @@
 <main>
   <h1>Sentiment Dashboard</h1>
   <p class="lede">
-    FinBERT sentiment over recent headlines for a fixed watchlist and the
-    11 SPDR sector ETFs. See the <a href="pipeline-explainer.html">pipeline explainer</a>
-    for how each rating is computed. Card background is a heatmap of the
-    average score — green toward BUY, red toward SELL, stronger tint the
-    further from zero.
+    FinBERT sentiment and price returns for a fixed watchlist and the 11 SPDR
+    sector ETFs. See the <a href="pipeline-explainer.html">pipeline explainer</a>
+    for how ratings are computed.
   </p>
 
   <details class="methodology">
@@ -389,6 +392,7 @@
     header.className = "card-header";
 
     const tickerBlock = document.createElement("div");
+    tickerBlock.className = "ticker-block";
     const ticker = document.createElement("div");
     ticker.className = "ticker";
     ticker.textContent = item.ticker;
@@ -428,12 +432,14 @@
     returns.appendChild(returnChip("1W", item.change_1w));
     returns.appendChild(returnChip("QTD", item.change_qtd));
     returns.appendChild(returnChip("YTD", item.change_ytd));
-    card.appendChild(returns);
 
-    const headlines = document.createElement("div");
+    const headlines = document.createElement("span");
     headlines.className = "headlines";
-    headlines.textContent = item.num_headlines + (item.num_headlines === 1 ? " headline" : " headlines");
-    card.appendChild(headlines);
+    headlines.textContent = item.num_headlines + "h";
+    headlines.title = item.num_headlines + (item.num_headlines === 1 ? " headline" : " headlines") + " scored";
+    returns.appendChild(headlines);
+
+    card.appendChild(returns);
 
     return card;
   }
