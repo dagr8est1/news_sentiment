@@ -24,6 +24,18 @@ def test_parser_accepts_count_and_output():
     assert args.output == "out.csv"
 
 
+def test_parser_verbose_defaults_to_false():
+    parser = build_arg_parser()
+    args = parser.parse_args(["AAPL"])
+    assert args.verbose is False
+
+
+def test_parser_accepts_verbose_flag():
+    parser = build_arg_parser()
+    args = parser.parse_args(["AAPL", "--verbose"])
+    assert args.verbose is True
+
+
 class _FakeNewsSource:
     def fetch(self, ticker, count):
         return [Headline(ticker=ticker, title="Great news", publisher=None, url=None, published_at=None)]
@@ -50,6 +62,33 @@ def test_run_prints_report_and_returns_ratings(capsys):
     assert "AAPL" in captured.out
     assert "BUY" in captured.out
     assert ratings[0].ticker == "AAPL"
+
+
+def test_run_omits_headlines_by_default(capsys):
+    run(
+        tickers=["AAPL"],
+        count=10,
+        output=None,
+        news_source=_FakeNewsSource(),
+        scorer=_FakeScorer(),
+    )
+
+    captured = capsys.readouterr()
+    assert "Great news" not in captured.out
+
+
+def test_run_prints_headlines_when_verbose(capsys):
+    run(
+        tickers=["AAPL"],
+        count=10,
+        output=None,
+        news_source=_FakeNewsSource(),
+        scorer=_FakeScorer(),
+        verbose=True,
+    )
+
+    captured = capsys.readouterr()
+    assert "Great news" in captured.out
 
 
 def test_run_saves_csv_when_output_given(tmp_path):
