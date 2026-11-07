@@ -45,9 +45,9 @@ def _headline(ticker: str) -> Headline:
     return Headline(ticker=ticker, title="t", publisher=None, url=None, published_at=None)
 
 
-def test_default_watchlist_has_ten_tickers():
-    assert len(DEFAULT_WATCHLIST) == 10
-    assert len(set(DEFAULT_WATCHLIST)) == 10
+def test_default_watchlist_has_twelve_tickers():
+    assert len(DEFAULT_WATCHLIST) == 12
+    assert len(set(DEFAULT_WATCHLIST)) == 12
 
 
 def test_default_sector_etfs_cover_all_eleven_spdr_sectors():

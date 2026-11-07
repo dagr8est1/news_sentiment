@@ -14,7 +14,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         description="Score a watchlist and sector ETFs with FinBERT and write a dashboard-data.json file.",
     )
     parser.add_argument(
-        "--watchlist", nargs="+", default=DEFAULT_WATCHLIST, help="Stock tickers to include (default: built-in top-10 watchlist)"
+        "--watchlist", nargs="+", default=DEFAULT_WATCHLIST, help="Stock tickers to include (default: built-in large-cap watchlist)"
     )
     parser.add_argument(
         "--sector-etfs",

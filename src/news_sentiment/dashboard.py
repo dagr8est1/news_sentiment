@@ -16,6 +16,8 @@ DEFAULT_WATCHLIST = [
     "TSLA",
     "BRK-B",
     "LLY",
+    "JPM",
+    "WMT",
 ]
 
 COMPANY_NAMES = {
@@ -29,6 +31,8 @@ COMPANY_NAMES = {
     "TSLA": "Tesla",
     "BRK-B": "Berkshire Hathaway",
     "LLY": "Eli Lilly",
+    "JPM": "JPMorgan Chase",
+    "WMT": "Walmart",
 }
 
 SECTOR_NAMES = {

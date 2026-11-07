@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T22:15:25.565064+00:00",
+  "generated_at": "2026-11-07T22:20:57.014930+00:00",
   "stocks": [
     {
       "ticker": "AAPL",
@@ -120,6 +120,30 @@
       "change_1w": -0.04482415826823675,
       "change_qtd": 0.17018706694803845,
       "change_ytd": 0.265996693926611
+    },
+    {
+      "ticker": "JPM",
+      "company_name": "JPMorgan Chase",
+      "rating": "HOLD",
+      "avg_score": 0.2,
+      "num_headlines": 10,
+      "price": 334.489990234375,
+      "change_1d": -0.008448467820166118,
+      "change_1w": -0.007565921688513723,
+      "change_qtd": 0.016107246416043577,
+      "change_ytd": 0.058072525375289785
+    },
+    {
+      "ticker": "WMT",
+      "company_name": "Walmart",
+      "rating": "BUY",
+      "avg_score": 0.3,
+      "num_headlines": 10,
+      "price": 125.5199966430664,
+      "change_1d": -0.017225215757985,
+      "change_1w": 0.01627394115513763,
+      "change_qtd": 0.20785218297449776,
+      "change_ytd": 0.13382384369093217
     }
   ],
   "sectors": [
@@ -229,7 +253,7 @@
       "change_1d": -0.0039260547792298985,
       "change_1w": -0.00690764989529126,
       "change_qtd": 0.09355990288770852,
-      "change_ytd": 0.031395130537777656
+      "change_ytd": 0.03139522462503351
     },
     {
       "ticker": "XLRE",
