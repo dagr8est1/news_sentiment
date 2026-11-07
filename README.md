@@ -96,31 +96,46 @@ tinted by `avg_score`.
 
 - `--watchlist` / `--sector-etfs`: override either ticker list.
 - `--count`: headlines per ticker (default 10, lower than the plain CLI's
-  default since this runs across 21 tickers at once).
+  default since this runs across 23 tickers at once).
 - `--output`: where to write the JSON (default `docs/dashboard-data.json`).
 
+### Viewing it locally
+
 `docs/dashboard.html` loads its data with `fetch()`, so it only works when
-served over HTTP — open it via GitHub Pages once that's set up, or locally
-with `python3 -m http.server` from `docs/`. Opening the file directly
-(`file://`) won't work; the page explains this if the fetch fails.
+served over HTTP — opening the file directly (`file://`, e.g. double-clicking
+it in Finder) won't work, and the page explains this if the fetch fails.
+
+```bash
+# 1. Generate (or refresh) the data it reads
+uv run news-sentiment-dashboard
+
+# 2. Serve the docs/ folder over HTTP
+cd docs
+python3 -m http.server 8000
+```
+
+Then open **http://localhost:8000/dashboard.html** in a browser. Leave the
+server running and re-run step 1 (then reload the page) whenever you want
+fresh data. Stop the server with `Ctrl+C`.
 
 ### Automating the daily refresh
 
 `.github/workflows/dashboard.yml` runs `news-sentiment-dashboard` on a cron
 schedule (weekdays, after US market close) and commits the updated
 `dashboard-data.json` back to `main`. It needs no secrets — FinBERT and
-`yfinance` are both free — but two things still need to be done once, by
+`yfinance` are both free — but one thing still needs to be done once, by
 hand, in the repo's GitHub settings:
 
-1. **Enable GitHub Pages**, pointed at the `main` branch, `/docs` folder
-   (Settings → Pages). This is what actually serves `dashboard.html`.
-2. **Merge this branch**, so the scheduled workflow exists on `main` —
-   GitHub only runs `schedule`-triggered workflows from the default branch.
+**Enable GitHub Pages**, pointed at the `main` branch, `/docs` folder
+(Settings → Pages). This is the one manual, one-time step left — it's what
+actually serves `dashboard.html` publicly; the workflow itself is already
+on `main` and needs no secrets to run.
 
-Until then, `dashboard.html` still works locally (`python3 -m http.server`
-in `docs/`) against whatever `dashboard-data.json` is currently committed;
-it just won't refresh itself. The page shows a banner if the data is more
-than 36 hours old, as a reminder the cron isn't running yet.
+Until Pages is enabled, `dashboard.html` still works — see
+[Viewing it locally](#viewing-it-locally) above — against whatever
+`dashboard-data.json` is currently committed; it just won't refresh itself.
+The page shows a banner if the data is more than 36 hours old, as a
+reminder the cron isn't deployed yet.
 
 ## Project structure
 
