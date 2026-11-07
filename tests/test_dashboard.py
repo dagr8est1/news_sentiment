@@ -8,6 +8,7 @@ from news_sentiment.dashboard import (
     save_dashboard_data,
 )
 from news_sentiment.models import Headline, ScoredHeadline
+from news_sentiment.prices import PriceReturns
 
 
 class _FakeNewsSource:
@@ -32,6 +33,13 @@ class _FakeScorer:
         ]
 
 
+class _FakePriceSource:
+    def fetch(self, ticker):
+        return PriceReturns(
+            ticker=ticker, price=100.0, change_1d=0.01, change_1w=0.02, change_qtd=0.03, change_ytd=0.04
+        )
+
+
 def _headline(ticker: str) -> Headline:
     return Headline(ticker=ticker, title="t", publisher=None, url=None, published_at=None)
 
@@ -50,7 +58,9 @@ def test_build_dashboard_data_includes_generated_at():
     news_source = _FakeNewsSource({})
     scorer = _FakeScorer()
 
-    data = build_dashboard_data([], [], news_source, scorer, generated_at="2026-11-07T00:00:00+00:00")
+    data = build_dashboard_data(
+        [], [], news_source, scorer, _FakePriceSource(), generated_at="2026-11-07T00:00:00+00:00"
+    )
 
     assert data["generated_at"] == "2026-11-07T00:00:00+00:00"
 
@@ -60,12 +70,37 @@ def test_build_dashboard_data_scores_each_watchlist_stock():
     scorer = _FakeScorer(sentiment_score=1)
 
     data = build_dashboard_data(
-        ["AAPL", "MSFT"], [], news_source, scorer, generated_at="2026-11-07T00:00:00+00:00"
+        ["AAPL", "MSFT"],
+        [],
+        news_source,
+        scorer,
+        _FakePriceSource(),
+        generated_at="2026-11-07T00:00:00+00:00",
     )
 
     assert data["stocks"] == [
-        {"ticker": "AAPL", "rating": "BUY", "avg_score": 1.0, "num_headlines": 1},
-        {"ticker": "MSFT", "rating": "BUY", "avg_score": 1.0, "num_headlines": 1},
+        {
+            "ticker": "AAPL",
+            "rating": "BUY",
+            "avg_score": 1.0,
+            "num_headlines": 1,
+            "price": 100.0,
+            "change_1d": 0.01,
+            "change_1w": 0.02,
+            "change_qtd": 0.03,
+            "change_ytd": 0.04,
+        },
+        {
+            "ticker": "MSFT",
+            "rating": "BUY",
+            "avg_score": 1.0,
+            "num_headlines": 1,
+            "price": 100.0,
+            "change_1d": 0.01,
+            "change_1w": 0.02,
+            "change_qtd": 0.03,
+            "change_ytd": 0.04,
+        },
     ]
 
 
@@ -74,7 +109,7 @@ def test_build_dashboard_data_scores_each_sector_etf_with_its_name():
     scorer = _FakeScorer(sentiment_score=-1)
 
     data = build_dashboard_data(
-        [], ["XLK"], news_source, scorer, generated_at="2026-11-07T00:00:00+00:00"
+        [], ["XLK"], news_source, scorer, _FakePriceSource(), generated_at="2026-11-07T00:00:00+00:00"
     )
 
     assert data["sectors"] == [
@@ -84,6 +119,11 @@ def test_build_dashboard_data_scores_each_sector_etf_with_its_name():
             "rating": "SELL",
             "avg_score": -1.0,
             "num_headlines": 1,
+            "price": 100.0,
+            "change_1d": 0.01,
+            "change_1w": 0.02,
+            "change_qtd": 0.03,
+            "change_ytd": 0.04,
         }
     ]
 

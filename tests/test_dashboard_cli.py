@@ -1,5 +1,6 @@
 from news_sentiment.dashboard_cli import build_arg_parser, run
 from news_sentiment.models import Headline, ScoredHeadline
+from news_sentiment.prices import PriceReturns
 
 
 class _FakeNewsSource:
@@ -13,6 +14,13 @@ class _FakeScorer:
             ScoredHeadline(headline=h, label="positive", confidence=0.9, sentiment_score=1)
             for h in headlines
         ]
+
+
+class _FakePriceSource:
+    def fetch(self, ticker):
+        return PriceReturns(
+            ticker=ticker, price=100.0, change_1d=0.01, change_1w=0.02, change_qtd=0.03, change_ytd=0.04
+        )
 
 
 def test_parser_defaults_to_the_built_in_watchlist_and_sectors():
@@ -42,6 +50,7 @@ def test_run_writes_dashboard_json(tmp_path):
         output=output_path,
         news_source=_FakeNewsSource(),
         scorer=_FakeScorer(),
+        price_source=_FakePriceSource(),
     )
 
     assert output_path.exists()

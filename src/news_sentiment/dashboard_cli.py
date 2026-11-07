@@ -4,6 +4,7 @@ from pathlib import Path
 from news_sentiment.dashboard import DEFAULT_SECTOR_ETFS, DEFAULT_WATCHLIST, build_dashboard_data, save_dashboard_data
 from news_sentiment.news_source import YFinanceNewsSource
 from news_sentiment.pipeline import NewsSource, Scorer
+from news_sentiment.prices import PriceSource, YFinancePriceSource
 from news_sentiment.sentiment import FinbertSentimentScorer
 
 
@@ -35,8 +36,9 @@ def run(
     output: str | Path,
     news_source: NewsSource,
     scorer: Scorer,
+    price_source: PriceSource,
 ) -> dict:
-    data = build_dashboard_data(watchlist, sector_etfs, news_source, scorer, count=count)
+    data = build_dashboard_data(watchlist, sector_etfs, news_source, scorer, price_source, count=count)
     save_dashboard_data(data, output)
     return data
 
@@ -50,6 +52,7 @@ def main(argv: list[str] | None = None) -> int:
         output=args.output,
         news_source=YFinanceNewsSource(),
         scorer=FinbertSentimentScorer(),
+        price_source=YFinancePriceSource(),
     )
     print(f"Wrote {len(data['stocks'])} stocks and {len(data['sectors'])} sector ETFs to {args.output}")
     return 0

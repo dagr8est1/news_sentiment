@@ -83,9 +83,16 @@ Scores a fixed watchlist (`AAPL`, `MSFT`, `NVDA`, `GOOGL`, `AMZN`, `META`,
 `AVGO`, `TSLA`, `BRK-B`, `LLY` — edit `DEFAULT_WATCHLIST` in `dashboard.py`
 to change it) and the 11 SPDR sector ETFs with FinBERT only (fast and
 reliable enough to run unattended; `--compare`-style LLM scoring stays a
-manual tool, not part of the automated job). Writes `docs/dashboard-data.json`,
+manual tool, not part of the automated job). For each ticker it also pulls
+the current price and 1-day, 1-week, quarter-to-date, and year-to-date
+returns from Yahoo Finance via `prices.py` (`compute_returns` is pure —
+given a list of `(date, close)` pairs it finds the closest trading day on
+or before each period's start and computes the percentage change, with no
+network access needed to test it). Writes `docs/dashboard-data.json`,
 which `docs/dashboard.html` reads and renders as cards grouped into
-Watchlist and Sector ETFs, sorted most-bullish-first.
+Watchlist and Sector ETFs, sorted most-bullish-first, with the price
+return shown alongside the sentiment rating and a background heatmap
+tinted by `avg_score`.
 
 - `--watchlist` / `--sector-etfs`: override either ticker list.
 - `--count`: headlines per ticker (default 10, lower than the plain CLI's
@@ -128,13 +135,14 @@ Each module has one job, so the pipeline reads top to bottom:
 | `pipeline.py` | Wires a news source and scorer(s) together: fetch → score → rate, per ticker. `analyze_tickers_multi` fetches each ticker's headlines once and scores them with multiple models, so results are directly comparable. |
 | `report.py` | Formats `TickerRating`s as a console table or CSV file, including side-by-side model comparisons. |
 | `cli.py` | Argument parsing and the `news-sentiment` entry point. |
-| `dashboard.py` | Builds the watchlist + sector-ETF JSON blob behind the dashboard, reusing `pipeline.analyze_tickers`. |
+| `dashboard.py` | Builds the watchlist + sector-ETF JSON blob behind the dashboard, reusing `pipeline.analyze_tickers` and enriching each entry with price/return data from `prices.py`. |
 | `dashboard_cli.py` | Argument parsing and the `news-sentiment-dashboard` entry point. |
+| `prices.py` | Pulls price history from Yahoo Finance and computes 1D/1W/QTD/YTD returns; `compute_returns` is a pure function, tested without any network access. |
 
-Each piece that talks to the outside world (`news_source.py`, `sentiment.py`)
-takes its dependency as a constructor argument, so the rest of the pipeline
-can be tested with fakes instead of hitting the network or loading the real
-model — see `tests/`.
+Each piece that talks to the outside world (`news_source.py`, `sentiment.py`,
+`prices.py`) takes its dependency as a constructor argument, so the rest of
+the pipeline can be tested with fakes instead of hitting the network or
+loading the real model — see `tests/`.
 
 ## Running tests
 

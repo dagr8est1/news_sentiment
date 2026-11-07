@@ -138,10 +138,23 @@
     padding: 12px 14px;
     min-width: 0;
   }
+  .card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
   .card .ticker {
     font-family: "IBM Plex Mono", monospace;
     font-weight: 600;
     font-size: 0.98rem;
+  }
+  .card .price {
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 600;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
   .card .sector-name {
     display: block;
@@ -164,6 +177,26 @@
     font-variant-numeric: tabular-nums;
     color: var(--muted);
   }
+  .returns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .returns .ret {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .returns .ret .label {
+    color: var(--muted);
+    margin-right: 3px;
+  }
+  .returns .ret.pos { color: var(--buy); }
+  .returns .ret.neg { color: var(--sell); }
+  .returns .ret.na { color: var(--muted); }
   .card .headlines {
     font-size: 0.72rem;
     color: var(--muted);
@@ -266,22 +299,55 @@
     return "color-mix(in srgb, var(" + hueVar + ") " + pct + "%, var(--surface))";
   }
 
+  function fmtPrice(price) {
+    return "$" + price.toFixed(2);
+  }
+
+  function fmtPct(value) {
+    if (value === null || value === undefined) return "—";
+    const pct = (value * 100).toFixed(1) + "%";
+    return value > 0 ? "+" + pct : pct;
+  }
+
+  function returnChip(label, value) {
+    const span = document.createElement("span");
+    const cls = value === null || value === undefined ? "na" : value >= 0 ? "pos" : "neg";
+    span.className = "ret " + cls;
+    const labelEl = document.createElement("span");
+    labelEl.className = "label";
+    labelEl.textContent = label;
+    span.appendChild(labelEl);
+    span.appendChild(document.createTextNode(fmtPct(value)));
+    return span;
+  }
+
   function renderCard(item, isSector) {
     const card = document.createElement("div");
     card.className = "card";
     card.style.background = heatBackground(item.avg_score);
 
+    const header = document.createElement("div");
+    header.className = "card-header";
+
+    const tickerBlock = document.createElement("div");
     const ticker = document.createElement("div");
     ticker.className = "ticker";
     ticker.textContent = item.ticker;
-    card.appendChild(ticker);
-
+    tickerBlock.appendChild(ticker);
     if (isSector) {
       const sector = document.createElement("span");
       sector.className = "sector-name";
       sector.textContent = item.sector_name;
-      card.appendChild(sector);
+      tickerBlock.appendChild(sector);
     }
+    header.appendChild(tickerBlock);
+
+    const price = document.createElement("div");
+    price.className = "price";
+    price.textContent = fmtPrice(item.price);
+    header.appendChild(price);
+
+    card.appendChild(header);
 
     const row = document.createElement("div");
     row.className = "card-row";
@@ -291,6 +357,14 @@
     score.textContent = fmtScore(item.avg_score);
     row.appendChild(score);
     card.appendChild(row);
+
+    const returns = document.createElement("div");
+    returns.className = "returns";
+    returns.appendChild(returnChip("1D", item.change_1d));
+    returns.appendChild(returnChip("1W", item.change_1w));
+    returns.appendChild(returnChip("QTD", item.change_qtd));
+    returns.appendChild(returnChip("YTD", item.change_ytd));
+    card.appendChild(returns);
 
     const headlines = document.createElement("div");
     headlines.className = "headlines";

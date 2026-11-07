@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from news_sentiment.pipeline import NewsSource, Scorer, analyze_tickers
+from news_sentiment.prices import PriceSource
 
 DEFAULT_WATCHLIST = [
     "AAPL",
@@ -34,11 +35,23 @@ SECTOR_NAMES = {
 DEFAULT_SECTOR_ETFS = list(SECTOR_NAMES)
 
 
+def _price_fields(price_source: PriceSource, ticker: str) -> dict:
+    p = price_source.fetch(ticker)
+    return {
+        "price": p.price,
+        "change_1d": p.change_1d,
+        "change_1w": p.change_1w,
+        "change_qtd": p.change_qtd,
+        "change_ytd": p.change_ytd,
+    }
+
+
 def build_dashboard_data(
     watchlist: list[str],
     sector_etfs: list[str],
     news_source: NewsSource,
     scorer: Scorer,
+    price_source: PriceSource,
     count: int = 10,
     generated_at: str | None = None,
 ) -> dict:
@@ -53,6 +66,7 @@ def build_dashboard_data(
                 "rating": r.rating,
                 "avg_score": r.avg_score,
                 "num_headlines": len(r.scored_headlines),
+                **_price_fields(price_source, r.ticker),
             }
             for r in stock_ratings
         ],
@@ -63,6 +77,7 @@ def build_dashboard_data(
                 "rating": r.rating,
                 "avg_score": r.avg_score,
                 "num_headlines": len(r.scored_headlines),
+                **_price_fields(price_source, r.ticker),
             }
             for r in sector_ratings
         ],
