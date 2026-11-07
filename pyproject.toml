@@ -4,7 +4,14 @@ version = "0.1.0"
 description = ""
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "torch>=2.15.0",
+    "transformers>=5.22.2",
+    "yfinance>=1.8.0",
+]
+
+[project.scripts]
+news-sentiment = "news_sentiment.cli:main"
 
 [dependency-groups]
 dev = ["pytest>=8.3.0"]
