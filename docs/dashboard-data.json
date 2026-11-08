@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-08T02:23:37.369909+00:00",
+  "generated_at": "2026-11-08T02:27:52.703753+00:00",
   "stocks": [
     {
       "ticker": "AAPL",
@@ -39,9 +39,9 @@
       "change_1d": 0.027753266061345372,
       "change_1w": -0.08795934349924805,
       "change_qtd": -0.1827655863068306,
-      "change_ytd": 0.003092357993496929,
+      "change_ytd": 0.0030924402551105344,
       "earnings_date": "2026-11-17",
-      "earnings_soon": false
+      "earnings_soon": true
     },
     {
       "ticker": "GOOGL",
@@ -81,7 +81,7 @@
       "change_1d": 0.0083790691826234,
       "change_1w": -0.007869991214764277,
       "change_qtd": -0.15862264461720635,
-      "change_ytd": -0.0732766708222306,
+      "change_ytd": -0.073276756732203,
       "earnings_date": "2027-01-27",
       "earnings_soon": false
     },
@@ -145,13 +145,13 @@
       "ticker": "JPM",
       "company_name": "JPMorgan Chase",
       "rating": "HOLD",
-      "avg_score": 0.2,
+      "avg_score": 0.1,
       "num_headlines": 10,
       "price": 334.489990234375,
       "change_1d": -0.008448467820166118,
       "change_1w": -0.007565921688513723,
       "change_qtd": 0.016107246416043577,
-      "change_ytd": 0.058072729656251335,
+      "change_ytd": 0.0580726275157607,
       "earnings_date": "2027-01-14",
       "earnings_soon": false
     },
@@ -167,7 +167,7 @@
       "change_qtd": 0.20785218297449776,
       "change_ytd": 0.13382392183002342,
       "earnings_date": "2026-11-19",
-      "earnings_soon": false
+      "earnings_soon": true
     }
   ],
   "sectors": [
@@ -205,7 +205,7 @@
       "change_1d": -0.00016229329964499115,
       "change_1w": -0.11996569714222392,
       "change_qtd": 0.0019512021444677338,
-      "change_ytd": 0.40552946312216404
+      "change_ytd": 0.4055295854198774
     },
     {
       "ticker": "XLV",
@@ -241,7 +241,7 @@
       "change_1d": -0.012821897741866439,
       "change_1w": 0.007380940232881684,
       "change_qtd": 0.11761790988094642,
-      "change_ytd": 0.18197076448411387
+      "change_ytd": 0.18197088280875612
     },
     {
       "ticker": "XLI",
@@ -277,7 +277,7 @@
       "change_1d": -0.0039260547792298985,
       "change_1w": -0.00690764989529126,
       "change_qtd": 0.09355990288770852,
-      "change_ytd": 0.03139522462503351
+      "change_ytd": 0.031395130537777656
     },
     {
       "ticker": "XLRE",

@@ -149,13 +149,20 @@
     border: 2px solid var(--earnings);
     padding: 6px 8px;
   }
+  .subtitle-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px;
+    min-width: 0;
+  }
   .card .earnings-badge {
-    display: block;
+    flex-shrink: 0;
+    white-space: nowrap;
     font-family: "IBM Plex Mono", monospace;
     font-size: 0.62rem;
     font-weight: 600;
     color: var(--earnings);
-    margin-top: 4px;
   }
   .card-header {
     display: flex;
@@ -187,7 +194,8 @@
     flex-shrink: 0;
   }
   .card .subtitle {
-    display: block;
+    flex: 1;
+    min-width: 0;
     font-size: 0.64rem;
     color: var(--muted);
     overflow: hidden;
@@ -412,17 +420,22 @@
     ticker.textContent = item.ticker;
     tickerBlock.appendChild(ticker);
 
+    const subtitleRow = document.createElement("div");
+    subtitleRow.className = "subtitle-row";
+
     const subtitle = document.createElement("span");
     subtitle.className = "subtitle";
     subtitle.textContent = isSector ? item.sector_name : item.company_name;
-    tickerBlock.appendChild(subtitle);
+    subtitleRow.appendChild(subtitle);
 
     if (!isSector && item.earnings_soon) {
       const earningsBadge = document.createElement("span");
       earningsBadge.className = "earnings-badge";
       earningsBadge.textContent = "Earnings " + fmtEarningsDate(item.earnings_date);
-      tickerBlock.appendChild(earningsBadge);
+      subtitleRow.appendChild(earningsBadge);
     }
+
+    tickerBlock.appendChild(subtitleRow);
 
     header.appendChild(tickerBlock);
 

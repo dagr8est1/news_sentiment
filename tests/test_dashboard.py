@@ -174,10 +174,12 @@ def test_build_dashboard_data_scores_each_sector_etf_with_its_name():
     ]
 
 
-def test_build_dashboard_data_flags_earnings_within_seven_days():
+def test_build_dashboard_data_flags_earnings_within_two_weeks():
     news_source = _FakeNewsSource({"NVDA": [_headline("NVDA")]})
     scorer = _FakeScorer()
-    earnings_source = _FakeEarningsSource({"NVDA": date(2026, 11, 12)})
+    # Matches NVDA's real-world earnings timing relative to this test's "today":
+    # 10 days out, inside the 2-week window but past the old 7-day one.
+    earnings_source = _FakeEarningsSource({"NVDA": date(2026, 11, 17)})
 
     data = build_dashboard_data(
         ["NVDA"],
@@ -190,7 +192,7 @@ def test_build_dashboard_data_flags_earnings_within_seven_days():
         today=date(2026, 11, 7),
     )
 
-    assert data["stocks"][0]["earnings_date"] == "2026-11-12"
+    assert data["stocks"][0]["earnings_date"] == "2026-11-17"
     assert data["stocks"][0]["earnings_soon"] is True
 
 

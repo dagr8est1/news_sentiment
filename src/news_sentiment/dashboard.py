@@ -65,12 +65,15 @@ def _price_fields(price_source: PriceSource, ticker: str) -> dict:
     }
 
 
+EARNINGS_SOON_DAYS = 14
+
+
 def _earnings_fields(earnings_source: EarningsSource, ticker: str, today: date) -> dict:
-    """Fetch a ticker's next earnings date and flag whether it's within the next 7 days."""
+    """Fetch a ticker's next earnings date and flag whether it's within the next 2 weeks."""
     earnings_date = earnings_source.fetch(ticker)
     return {
         "earnings_date": earnings_date.isoformat() if earnings_date else None,
-        "earnings_soon": is_earnings_soon(earnings_date, today),
+        "earnings_soon": is_earnings_soon(earnings_date, today, days=EARNINGS_SOON_DAYS),
     }
 
 
