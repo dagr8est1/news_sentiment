@@ -153,9 +153,15 @@
     overflow: hidden;
   }
   .card .ticker {
+    display: block;
     font-family: "IBM Plex Mono", monospace;
     font-weight: 600;
     font-size: 0.86rem;
+    color: inherit;
+    text-decoration: none;
+  }
+  .card .ticker:hover {
+    text-decoration: underline;
   }
   .card .price {
     font-family: "IBM Plex Mono", monospace;
@@ -378,8 +384,11 @@
 
     const tickerBlock = document.createElement("div");
     tickerBlock.className = "ticker-block";
-    const ticker = document.createElement("div");
+    const ticker = document.createElement("a");
     ticker.className = "ticker";
+    ticker.href = "https://finance.yahoo.com/quote/" + encodeURIComponent(item.ticker) + "/";
+    ticker.target = "_blank";
+    ticker.rel = "noopener";
     ticker.textContent = item.ticker;
     tickerBlock.appendChild(ticker);
 
