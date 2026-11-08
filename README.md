@@ -29,14 +29,14 @@ uv run news-sentiment AAPL MSFT --count 20 --output report.csv
 - `--output`: optional path to also save the results as CSV.
 - `--verbose`: also print each headline with its sentiment label.
 - `--compare`: score the same headlines with both FinBERT and
-  [Qwen2.5-0.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct)
+  [Qwen2.5-1.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct)
   and print their ratings side by side, so you can see where a classifier
   model and a general-purpose LLM agree or disagree.
 
 The first run downloads the FinBERT model (~440 MB) from Hugging Face and
 caches it locally; subsequent runs reuse the cache and need no network
-access for scoring. `--compare` additionally downloads Qwen2.5-0.5B-Instruct
-(~1 GB) on first use.
+access for scoring. `--compare` additionally downloads Qwen2.5-1.5B-Instruct
+(~3 GB) on first use.
 
 ### Comparing FinBERT and Qwen
 
@@ -57,11 +57,17 @@ AAPL:
 
 FinBERT is a classifier fine-tuned on financial text, so it's fast and
 decisive but only judges a headline's general tone. Qwen is a small
-general-purpose instruction-following model, so it's slower and, at this
-size (0.5B parameters), noticeably more cautious — it defaults to "neutral"
-more often. Swap `QWEN_MODEL` in `sentiment.py` for a larger Qwen checkpoint
-(e.g. `Qwen/Qwen2.5-3B-Instruct`) if you want sharper judgments at the cost
-of slower local inference.
+general-purpose instruction-following model, so it's slower and more
+cautious about committing to a label. Model size matters a lot here:
+testing the smaller `Qwen2.5-0.5B-Instruct` checkpoint on a batch of real
+headlines showed it mode-collapsing to a literal `"Neutral"` reply on
+every single one, regardless of content — it wasn't reading the headline
+at all. `Qwen2.5-1.5B-Instruct`, the current default, is the smallest
+checkpoint that actually discriminates between headlines; see
+`notebooks/pipeline_exploration.ipynb` for the side-by-side raw outputs.
+Swap `QWEN_MODEL` in `sentiment.py` for a larger Qwen checkpoint (e.g.
+`Qwen/Qwen2.5-3B-Instruct`) if you want sharper judgments still, at the
+cost of slower local inference.
 
 **How Qwen scoring works internally:** unlike FinBERT, which is a classifier
 that returns a label directly, Qwen is a text-generation model — it replies
