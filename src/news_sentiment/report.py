@@ -7,6 +7,7 @@ _COLUMNS = ("ticker", "rating", "avg_score", "num_headlines")
 
 
 def format_report(ratings: list[TickerRating]) -> str:
+    """Render ratings as a console table: ticker, rating, avg score, headline count."""
     header = f"{'TICKER':<8}{'RATING':<8}{'AVG SCORE':<12}{'HEADLINES':<10}"
     lines = [header, "-" * len(header)]
     for r in ratings:
@@ -15,6 +16,7 @@ def format_report(ratings: list[TickerRating]) -> str:
 
 
 def format_headlines(ratings: list[TickerRating]) -> str:
+    """List each ticker's headlines with their sentiment label and publisher."""
     lines = []
     for r in ratings:
         lines.append(f"{r.ticker} ({r.rating}):")
@@ -29,6 +31,7 @@ def format_headlines(ratings: list[TickerRating]) -> str:
 
 
 def save_csv(ratings: list[TickerRating], path: Path) -> None:
+    """Write ratings to `path` as CSV, one row per ticker."""
     with Path(path).open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=_COLUMNS)
         writer.writeheader()
@@ -44,6 +47,7 @@ def save_csv(ratings: list[TickerRating], path: Path) -> None:
 
 
 def format_comparison(results: dict[str, dict[str, TickerRating]]) -> str:
+    """Render a side-by-side console table of each model's rating per ticker."""
     if not results:
         return ""
 
@@ -61,6 +65,7 @@ def format_comparison(results: dict[str, dict[str, TickerRating]]) -> str:
 
 
 def format_comparison_headlines(results: dict[str, dict[str, TickerRating]]) -> str:
+    """Pair each headline's label across every model, grouped by ticker."""
     lines = []
     for ticker, by_model in results.items():
         lines.append(f"{ticker}:")
@@ -83,6 +88,7 @@ def format_comparison_headlines(results: dict[str, dict[str, TickerRating]]) -> 
 
 
 def save_comparison_csv(results: dict[str, dict[str, TickerRating]], path: Path) -> None:
+    """Write comparison results to `path` as CSV, one row per ticker per model."""
     with Path(path).open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=("ticker", "model") + _COLUMNS[1:])
         writer.writeheader()

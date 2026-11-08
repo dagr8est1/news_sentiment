@@ -16,6 +16,7 @@ from news_sentiment.sentiment import FinbertSentimentScorer, QwenSentimentScorer
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
+    """Build the `news-sentiment` CLI's argument parser."""
     parser = argparse.ArgumentParser(
         prog="news-sentiment",
         description="Fetch financial news headlines and rate tickers BUY/HOLD/SELL using FinBERT sentiment.",
@@ -42,6 +43,7 @@ def run(
     scorer: Scorer,
     verbose: bool = False,
 ) -> list[TickerRating]:
+    """Score tickers with a single model, print a report, and optionally save CSV."""
     ratings = analyze_tickers(tickers, news_source, scorer, count=count)
     print(format_report(ratings))
     if verbose:
@@ -60,6 +62,7 @@ def run_compare(
     scorers: dict[str, Scorer],
     verbose: bool = False,
 ) -> dict[str, dict[str, TickerRating]]:
+    """Score tickers with multiple models, print a comparison, and optionally save CSV."""
     results = analyze_tickers_multi(tickers, news_source, scorers, count=count)
     print(format_comparison(results))
     if verbose:
@@ -71,6 +74,7 @@ def run_compare(
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Parse CLI args and run the single-model or --compare path accordingly."""
     args = build_arg_parser().parse_args(argv)
     if args.compare:
         run_compare(
