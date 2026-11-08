@@ -9,6 +9,7 @@ from news_sentiment.sentiment import FinbertSentimentScorer
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
+    """Build the `news-sentiment-dashboard` CLI's argument parser."""
     parser = argparse.ArgumentParser(
         prog="news-sentiment-dashboard",
         description="Score a watchlist and sector ETFs with FinBERT and write a dashboard-data.json file.",
@@ -38,12 +39,14 @@ def run(
     scorer: Scorer,
     price_source: PriceSource,
 ) -> dict:
+    """Build the dashboard payload and write it to `output`."""
     data = build_dashboard_data(watchlist, sector_etfs, news_source, scorer, price_source, count=count)
     save_dashboard_data(data, output)
     return data
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Parse CLI args and run the dashboard data build end to end."""
     args = build_arg_parser().parse_args(argv)
     data = run(
         watchlist=args.watchlist,
