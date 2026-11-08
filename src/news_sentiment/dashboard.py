@@ -53,6 +53,7 @@ DEFAULT_SECTOR_ETFS = list(SECTOR_NAMES)
 
 
 def _price_fields(price_source: PriceSource, ticker: str) -> dict:
+    """Fetch a ticker's price/returns and shape them as dashboard JSON fields."""
     p = price_source.fetch(ticker)
     return {
         "price": p.price,
@@ -72,6 +73,7 @@ def build_dashboard_data(
     count: int = 10,
     generated_at: str | None = None,
 ) -> dict:
+    """Score the watchlist and sector ETFs and build the dashboard's JSON payload."""
     stock_ratings = analyze_tickers(watchlist, news_source, scorer, count=count)
     sector_ratings = analyze_tickers(sector_etfs, news_source, scorer, count=count)
 
@@ -103,5 +105,6 @@ def build_dashboard_data(
 
 
 def save_dashboard_data(data: dict, path: str | Path) -> None:
+    """Write the dashboard payload to `path` as indented JSON."""
     with Path(path).open("w") as f:
         json.dump(data, f, indent=2)

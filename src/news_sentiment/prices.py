@@ -6,7 +6,9 @@ HistoryProvider = Callable[[str], list[tuple[date, float]]]
 
 
 class PriceSource(Protocol):
-    def fetch(self, ticker: str) -> "PriceReturns": ...
+    def fetch(self, ticker: str) -> "PriceReturns":
+        """Return `ticker`'s current price and 1D/1W/QTD/YTD returns."""
+        ...
 
 
 @dataclass(frozen=True)
@@ -20,6 +22,7 @@ class PriceReturns:
 
 
 def _closest_close_on_or_before(closes: list[tuple[date, float]], target: date) -> float | None:
+    """Return the latest close on or before `target`, or None if history doesn't reach back that far."""
     result = None
     for d, close in closes:
         if d <= target:
@@ -30,11 +33,13 @@ def _closest_close_on_or_before(closes: list[tuple[date, float]], target: date) 
 
 
 def _quarter_start(d: date) -> date:
+    """Return the first day of the calendar quarter containing `d`."""
     quarter_start_month = 3 * ((d.month - 1) // 3) + 1
     return date(d.year, quarter_start_month, 1)
 
 
 def compute_returns(ticker: str, closes: list[tuple[date, float]]) -> PriceReturns:
+    """Compute current price and 1D/1W/QTD/YTD returns from ascending (date, close) pairs."""
     if not closes:
         return PriceReturns(
             ticker=ticker, price=0.0, change_1d=None, change_1w=None, change_qtd=None, change_ytd=None
@@ -44,6 +49,7 @@ def compute_returns(ticker: str, closes: list[tuple[date, float]]) -> PriceRetur
     history = closes[:-1]
 
     def pct_change(baseline: float | None) -> float | None:
+        """Percentage change from `baseline` to the current price, or None if no baseline."""
         if not baseline:
             return None
         return (price - baseline) / baseline
@@ -68,6 +74,7 @@ def compute_returns(ticker: str, closes: list[tuple[date, float]]) -> PriceRetur
 
 
 def _default_history_provider(ticker: str) -> list[tuple[date, float]]:
+    """Pull ~2 years of daily closes for `ticker` from yfinance."""
     import yfinance as yf
 
     hist = yf.Ticker(ticker).history(period="2y")
@@ -75,9 +82,13 @@ def _default_history_provider(ticker: str) -> list[tuple[date, float]]:
 
 
 class YFinancePriceSource:
+    """Fetches price history from Yahoo Finance and computes a ticker's returns."""
+
     def __init__(self, history_provider: HistoryProvider | None = None):
+        """Accept an optional fake history provider for testing without network access."""
         self._history_provider = history_provider or _default_history_provider
 
     def fetch(self, ticker: str) -> PriceReturns:
+        """Fetch `ticker`'s price history and compute its current price and returns."""
         closes = self._history_provider(ticker)
         return compute_returns(ticker, closes)
