@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>News Sentiment Pipeline</title>
 <style>
@@ -240,6 +241,18 @@
     margin: 0 0 20px;
   }
   .callout strong { color: var(--accent); }
+  .source-list {
+    columns: 3;
+    column-gap: 20px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.82rem;
+    margin: 0 0 20px;
+    padding-left: 18px;
+  }
+  .source-list li {
+    margin-bottom: 5px;
+    break-inside: avoid;
+  }
   footer {
     margin-top: 64px;
     padding-top: 20px;
@@ -249,6 +262,7 @@
   }
   @media (max-width: 480px) {
     h2 { margin-top: 40px; }
+    .source-list { columns: 2; }
   }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -323,6 +337,52 @@
     are the Yahoo Finance fetch and the FinBERT forward pass — everything
     else, including the BUY/HOLD/SELL math, is pure Python with no I/O.
   </figcaption>
+
+  <h3>Where the headlines actually come from</h3>
+  <p>
+    <code>news_source.py</code> doesn't pick news sources itself — it asks
+    Yahoo Finance's per-ticker news feed for whatever it has, and that feed
+    aggregates and syndicates from dozens of third-party publishers.
+    <code>Headline.publisher</code> is read straight off that feed's own
+    attribution (<code>content.provider.displayName</code> in the raw
+    article JSON) — there's no fixed allowlist in this codebase, and the
+    mix shifts from one run to the next depending on what each publisher
+    has filed that day.
+  </p>
+  <p>
+    A real sample, pulled live across a handful of tickers in the
+    watchlist and sector ETFs:
+  </p>
+  <ul class="source-list">
+    <li>24/7 Wall St.</li>
+    <li>Barchart</li>
+    <li>Barrons.com</li>
+    <li>Benzinga</li>
+    <li>Bloomberg</li>
+    <li>decrypt</li>
+    <li>GuruFocus.com</li>
+    <li>Insider Monkey</li>
+    <li>Investing.com</li>
+    <li>Investor's Business Daily</li>
+    <li>InvestorsHub</li>
+    <li>Moneywise</li>
+    <li>Motley Fool</li>
+    <li>MT Newswires</li>
+    <li>Simply Wall St.</li>
+    <li>The Wall Street Journal</li>
+    <li>TheStreet</li>
+    <li>TIKR</li>
+    <li>Trefis</li>
+    <li>Yahoo Finance</li>
+    <li>Zacks</li>
+  </ul>
+  <p>
+    Because the set isn't curated, source quality is as mixed as it would
+    be reading the news yourself — a Wall Street Journal headline and an
+    SEO-driven aggregator piece carry very different editorial weight, but
+    <code>FinbertSentimentScorer</code> and <code>QwenSentimentScorer</code>
+    both score every headline identically regardless of where it came from.
+  </p>
 
   <h3>The averaging rule</h3>
   <p>
