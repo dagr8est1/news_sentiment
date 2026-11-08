@@ -15,7 +15,12 @@ news-sentiment = "news_sentiment.cli:main"
 news-sentiment-dashboard = "news_sentiment.dashboard_cli:main"
 
 [dependency-groups]
-dev = ["pytest>=8.3.0"]
+dev = [
+    "pytest>=8.3.0",
+    "ipykernel>=6.30.0",
+    "pandas>=2.2.0",
+    "matplotlib>=3.9.0",
+]
 
 [build-system]
 requires = ["hatchling"]
