@@ -94,6 +94,12 @@ Watchlist and Sector ETFs, sorted most-bullish-first, with the price
 return shown alongside the sentiment rating and a background heatmap
 tinted by `avg_score`.
 
+For each watchlist stock (not sector ETFs, which don't report earnings),
+`earnings.py` also pulls the next earnings date from Yahoo Finance via
+`yfinance`'s `Ticker.calendar`. If that date falls within the next 2 weeks,
+the card gets a distinct colored border and shows the date directly — a
+quick visual flag for "this one's about to move."
+
 - `--watchlist` / `--sector-etfs`: override either ticker list.
 - `--count`: headlines per ticker (default 10, lower than the plain CLI's
   default since this runs across 23 tickers at once).
@@ -150,13 +156,14 @@ Each module has one job, so the pipeline reads top to bottom:
 | `pipeline.py` | Wires a news source and scorer(s) together: fetch → score → rate, per ticker. `analyze_tickers_multi` fetches each ticker's headlines once and scores them with multiple models, so results are directly comparable. |
 | `report.py` | Formats `TickerRating`s as a console table or CSV file, including side-by-side model comparisons. |
 | `cli.py` | Argument parsing and the `news-sentiment` entry point. |
-| `dashboard.py` | Builds the watchlist + sector-ETF JSON blob behind the dashboard, reusing `pipeline.analyze_tickers` and enriching each entry with price/return data from `prices.py`. |
+| `dashboard.py` | Builds the watchlist + sector-ETF JSON blob behind the dashboard, reusing `pipeline.analyze_tickers` and enriching each entry with price/return data from `prices.py` and earnings dates from `earnings.py`. |
 | `dashboard_cli.py` | Argument parsing and the `news-sentiment-dashboard` entry point. |
 | `prices.py` | Pulls price history from Yahoo Finance and computes 1D/1W/QTD/YTD returns; `compute_returns` is a pure function, tested without any network access. |
+| `earnings.py` | Pulls each stock's next earnings date from Yahoo Finance and flags whether it falls within the next 2 weeks; `is_earnings_soon` is a pure function. |
 
 Each piece that talks to the outside world (`news_source.py`, `sentiment.py`,
-`prices.py`) takes its dependency as a constructor argument, so the rest of
-the pipeline can be tested with fakes instead of hitting the network or
+`prices.py`, `earnings.py`) takes its dependency as a constructor argument,
+so the rest of the pipeline can be tested with fakes instead of hitting the network or
 loading the real model — see `tests/`.
 
 ## Running tests

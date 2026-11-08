@@ -22,6 +22,7 @@
     --buy: #1f7a3d;
     --hold: #9a6b0a;
     --sell: #a3271f;
+    --earnings: #3b5fc4;
     --warn-bg: #fbeedb;
     --warn-fg: #7a4a0a;
   }
@@ -37,6 +38,7 @@
       --buy: #4ec97a;
       --hold: #e0a83f;
       --sell: #f0665e;
+      --earnings: #7a9dff;
       --warn-bg: #352a16;
       --warn-fg: #e0a83f;
       color-scheme: dark;
@@ -53,6 +55,7 @@
     --buy: #4ec97a;
     --hold: #e0a83f;
     --sell: #f0665e;
+    --earnings: #7a9dff;
     --warn-bg: #352a16;
     --warn-fg: #e0a83f;
     color-scheme: dark;
@@ -142,6 +145,25 @@
     min-width: 0;
     min-height: 100px;
   }
+  .card.earnings-soon {
+    border: 2px solid var(--earnings);
+    padding: 6px 8px;
+  }
+  .subtitle-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px;
+    min-width: 0;
+  }
+  .card .earnings-badge {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--earnings);
+  }
   .card-header {
     display: flex;
     align-items: baseline;
@@ -172,7 +194,8 @@
     flex-shrink: 0;
   }
   .card .subtitle {
-    display: block;
+    flex: 1;
+    min-width: 0;
     font-size: 0.64rem;
     color: var(--muted);
     overflow: hidden;
@@ -374,9 +397,14 @@
     return span;
   }
 
+  function fmtEarningsDate(isoDate) {
+    const d = new Date(isoDate + "T00:00:00");
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  }
+
   function renderCard(item, isSector) {
     const card = document.createElement("div");
-    card.className = "card";
+    card.className = "card" + (!isSector && item.earnings_soon ? " earnings-soon" : "");
     card.style.background = heatBackground(item.avg_score);
 
     const header = document.createElement("div");
@@ -391,12 +419,6 @@
     ticker.rel = "noopener";
     ticker.textContent = item.ticker;
     tickerBlock.appendChild(ticker);
-
-    const subtitle = document.createElement("span");
-    subtitle.className = "subtitle";
-    subtitle.textContent = isSector ? item.sector_name : item.company_name;
-    tickerBlock.appendChild(subtitle);
-
     header.appendChild(tickerBlock);
 
     const price = document.createElement("div");
@@ -405,6 +427,26 @@
     header.appendChild(price);
 
     card.appendChild(header);
+
+    // Its own full-width row (sibling of header, not nested in tickerBlock)
+    // so the earnings badge lines up with price's right edge, not just
+    // ticker-block's narrower column.
+    const subtitleRow = document.createElement("div");
+    subtitleRow.className = "subtitle-row";
+
+    const subtitle = document.createElement("span");
+    subtitle.className = "subtitle";
+    subtitle.textContent = isSector ? item.sector_name : item.company_name;
+    subtitleRow.appendChild(subtitle);
+
+    if (!isSector && item.earnings_soon) {
+      const earningsBadge = document.createElement("span");
+      earningsBadge.className = "earnings-badge";
+      earningsBadge.textContent = "Earnings " + fmtEarningsDate(item.earnings_date);
+      subtitleRow.appendChild(earningsBadge);
+    }
+
+    card.appendChild(subtitleRow);
 
     const row = document.createElement("div");
     row.className = "card-row";

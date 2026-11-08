@@ -23,6 +23,11 @@ class _FakePriceSource:
         )
 
 
+class _FakeEarningsSource:
+    def fetch(self, ticker):
+        return None
+
+
 def test_parser_defaults_to_the_built_in_watchlist_and_sectors():
     parser = build_arg_parser()
     args = parser.parse_args([])
@@ -51,6 +56,7 @@ def test_run_writes_dashboard_json(tmp_path):
         news_source=_FakeNewsSource(),
         scorer=_FakeScorer(),
         price_source=_FakePriceSource(),
+        earnings_source=_FakeEarningsSource(),
     )
 
     assert output_path.exists()
