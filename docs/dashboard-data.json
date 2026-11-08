@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-08T01:57:54.612966+00:00",
+  "generated_at": "2026-11-08T02:23:37.369909+00:00",
   "stocks": [
     {
       "ticker": "AAPL",
@@ -11,7 +11,9 @@
       "change_1d": -0.005230026557571745,
       "change_1w": -0.006557785838738825,
       "change_qtd": 0.028076411062315444,
-      "change_ytd": 0.262789384121747
+      "change_ytd": 0.262789384121747,
+      "earnings_date": "2027-01-28",
+      "earnings_soon": false
     },
     {
       "ticker": "MSFT",
@@ -23,19 +25,23 @@
       "change_1d": -0.009926683329770586,
       "change_1w": 0.01666956497231368,
       "change_qtd": 0.03452907017840733,
-      "change_ytd": 0.10412363827934036
+      "change_ytd": 0.10412363827934036,
+      "earnings_date": "2027-01-27",
+      "earnings_soon": false
     },
     {
       "ticker": "NVDA",
       "company_name": "NVIDIA",
       "rating": "HOLD",
-      "avg_score": -0.1,
+      "avg_score": -0.2,
       "num_headlines": 10,
       "price": 186.63999938964844,
       "change_1d": 0.027753266061345372,
       "change_1w": -0.08795934349924805,
       "change_qtd": -0.1827655863068306,
-      "change_ytd": 0.0030924402551105344
+      "change_ytd": 0.003092357993496929,
+      "earnings_date": "2026-11-17",
+      "earnings_soon": false
     },
     {
       "ticker": "GOOGL",
@@ -47,7 +53,9 @@
       "change_1d": 0.007821040442350971,
       "change_1w": 0.017652953495044657,
       "change_qtd": -0.172343612262128,
-      "change_ytd": -0.08838983669274304
+      "change_ytd": -0.08838983669274304,
+      "earnings_date": "2026-10-28",
+      "earnings_soon": false
     },
     {
       "ticker": "AMZN",
@@ -59,7 +67,9 @@
       "change_1d": -0.003497189546875933,
       "change_1w": 0.0788432752578821,
       "change_qtd": 0.040738487437818056,
-      "change_ytd": 0.12338609983988916
+      "change_ytd": 0.12338609983988916,
+      "earnings_date": "2026-10-29",
+      "earnings_soon": false
     },
     {
       "ticker": "META",
@@ -71,7 +81,9 @@
       "change_1d": 0.0083790691826234,
       "change_1w": -0.007869991214764277,
       "change_qtd": -0.15862264461720635,
-      "change_ytd": -0.073276756732203
+      "change_ytd": -0.0732766708222306,
+      "earnings_date": "2027-01-27",
+      "earnings_soon": false
     },
     {
       "ticker": "AVGO",
@@ -83,7 +95,9 @@
       "change_1d": 0.007409198611305207,
       "change_1w": -0.09933140782830942,
       "change_qtd": -0.1637290344265808,
-      "change_ytd": -0.14675351481056037
+      "change_ytd": -0.14675343916038197,
+      "earnings_date": "2026-12-09",
+      "earnings_soon": false
     },
     {
       "ticker": "TSLA",
@@ -95,7 +109,9 @@
       "change_1d": 0.04227646622270897,
       "change_1w": -0.1040244030710999,
       "change_qtd": 0.009610787986734344,
-      "change_ytd": -0.20345993007123506
+      "change_ytd": -0.20345993007123506,
+      "earnings_date": "2027-01-27",
+      "earnings_soon": false
     },
     {
       "ticker": "BRK-B",
@@ -107,7 +123,9 @@
       "change_1d": -0.0025160351517614006,
       "change_1w": 0.05235124135985012,
       "change_qtd": 0.14648057165039327,
-      "change_ytd": 0.13576051244517962
+      "change_ytd": 0.13576051244517962,
+      "earnings_date": "2026-11-07",
+      "earnings_soon": true
     },
     {
       "ticker": "LLY",
@@ -119,7 +137,9 @@
       "change_1d": -0.007862346854184682,
       "change_1w": -0.04482415826823675,
       "change_qtd": 0.17018706694803845,
-      "change_ytd": 0.265996693926611
+      "change_ytd": 0.265996693926611,
+      "earnings_date": "2026-10-29",
+      "earnings_soon": false
     },
     {
       "ticker": "JPM",
@@ -131,7 +151,9 @@
       "change_1d": -0.008448467820166118,
       "change_1w": -0.007565921688513723,
       "change_qtd": 0.016107246416043577,
-      "change_ytd": 0.0580726275157607
+      "change_ytd": 0.058072729656251335,
+      "earnings_date": "2027-01-14",
+      "earnings_soon": false
     },
     {
       "ticker": "WMT",
@@ -143,7 +165,9 @@
       "change_1d": -0.017225215757985,
       "change_1w": 0.01627394115513763,
       "change_qtd": 0.20785218297449776,
-      "change_ytd": 0.13382384369093217
+      "change_ytd": 0.13382392183002342,
+      "earnings_date": "2026-11-19",
+      "earnings_soon": false
     }
   ],
   "sectors": [
@@ -193,7 +217,7 @@
       "change_1d": -0.0005948872866422594,
       "change_1w": -0.0003786015431293766,
       "change_qtd": 0.09725688790461454,
-      "change_ytd": 0.2086004755144962
+      "change_ytd": 0.2086005961245914
     },
     {
       "ticker": "XLY",
@@ -277,7 +301,7 @@
       "change_1d": 0.004312867485440974,
       "change_1w": 0.04894894209167447,
       "change_qtd": -0.05569072936103392,
-      "change_ytd": -0.10172237347168932
+      "change_ytd": -0.10172231472391423
     }
   ]
 }

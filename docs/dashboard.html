@@ -22,6 +22,7 @@
     --buy: #1f7a3d;
     --hold: #9a6b0a;
     --sell: #a3271f;
+    --earnings: #3b5fc4;
     --warn-bg: #fbeedb;
     --warn-fg: #7a4a0a;
   }
@@ -37,6 +38,7 @@
       --buy: #4ec97a;
       --hold: #e0a83f;
       --sell: #f0665e;
+      --earnings: #7a9dff;
       --warn-bg: #352a16;
       --warn-fg: #e0a83f;
       color-scheme: dark;
@@ -53,6 +55,7 @@
     --buy: #4ec97a;
     --hold: #e0a83f;
     --sell: #f0665e;
+    --earnings: #7a9dff;
     --warn-bg: #352a16;
     --warn-fg: #e0a83f;
     color-scheme: dark;
@@ -141,6 +144,18 @@
     padding: 7px 9px;
     min-width: 0;
     min-height: 100px;
+  }
+  .card.earnings-soon {
+    border: 2px solid var(--earnings);
+    padding: 6px 8px;
+  }
+  .card .earnings-badge {
+    display: block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--earnings);
+    margin-top: 4px;
   }
   .card-header {
     display: flex;
@@ -374,9 +389,14 @@
     return span;
   }
 
+  function fmtEarningsDate(isoDate) {
+    const d = new Date(isoDate + "T00:00:00");
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  }
+
   function renderCard(item, isSector) {
     const card = document.createElement("div");
-    card.className = "card";
+    card.className = "card" + (!isSector && item.earnings_soon ? " earnings-soon" : "");
     card.style.background = heatBackground(item.avg_score);
 
     const header = document.createElement("div");
@@ -396,6 +416,13 @@
     subtitle.className = "subtitle";
     subtitle.textContent = isSector ? item.sector_name : item.company_name;
     tickerBlock.appendChild(subtitle);
+
+    if (!isSector && item.earnings_soon) {
+      const earningsBadge = document.createElement("span");
+      earningsBadge.className = "earnings-badge";
+      earningsBadge.textContent = "Earnings " + fmtEarningsDate(item.earnings_date);
+      tickerBlock.appendChild(earningsBadge);
+    }
 
     header.appendChild(tickerBlock);
 

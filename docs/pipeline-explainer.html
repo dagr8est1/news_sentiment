@@ -659,23 +659,25 @@
       <tr><td class="mod">pipeline.py</td><td>Wires a news source and one or more scorers together: fetch → score → rate.</td></tr>
       <tr><td class="mod">report.py</td><td>Formats results as a console table, a headline list, or CSV.</td></tr>
       <tr><td class="mod">cli.py</td><td>Argument parsing and the <code>news-sentiment</code> entry point.</td></tr>
-      <tr><td class="mod">dashboard.py</td><td>Builds the watchlist + sector-ETF JSON blob, reusing <code>pipeline.analyze_tickers</code> and enriching each entry with price/return data.</td></tr>
+      <tr><td class="mod">dashboard.py</td><td>Builds the watchlist + sector-ETF JSON blob, reusing <code>pipeline.analyze_tickers</code> and enriching each entry with price/return data and earnings dates.</td></tr>
       <tr><td class="mod">dashboard_cli.py</td><td>Argument parsing and the <code>news-sentiment-dashboard</code> entry point.</td></tr>
       <tr><td class="mod">prices.py</td><td>Pulls price history from Yahoo Finance and computes 1D/1W/QTD/YTD returns.</td></tr>
+      <tr><td class="mod">earnings.py</td><td>Pulls each stock's next earnings date and flags whether it's within the next 7 days.</td></tr>
     </tbody>
   </table>
 
   <h3>Why this is easy to test without a network or a GPU</h3>
   <p>
-    <code>news_source.py</code>, <code>sentiment.py</code>, and
-    <code>prices.py</code> are the only three modules that touch the
-    outside world, and all three take their dependency as a constructor
-    argument — a <code>ticker_factory</code>, a <code>classifier</code>, a
-    <code>generator</code>, a <code>history_provider</code>. Every other
-    module, including the whole compare-mode pipeline and the dashboard's
-    date math, is tested by handing it a fake that returns canned data
-    instead of calling Yahoo Finance or loading a model. That's what keeps
-    a 72-test suite running in under a tenth of a second.
+    <code>news_source.py</code>, <code>sentiment.py</code>,
+    <code>prices.py</code>, and <code>earnings.py</code> are the only four
+    modules that touch the outside world, and all four take their
+    dependency as a constructor argument — a <code>ticker_factory</code>, a
+    <code>classifier</code>, a <code>generator</code>, a
+    <code>history_provider</code>, a <code>calendar_provider</code>. Every
+    other module, including the whole compare-mode pipeline and the
+    dashboard's date math, is tested by handing it a fake that returns
+    canned data instead of calling Yahoo Finance or loading a model. That's
+    what keeps an 85-test suite running in under a tenth of a second.
   </p>
 
   <footer>
