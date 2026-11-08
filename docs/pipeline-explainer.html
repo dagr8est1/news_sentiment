@@ -426,15 +426,18 @@
       <span class="spec">110M params · ProsusAI/finbert · classifier</span>
     </div>
     <div class="model-card qwen">
-      <h4>Qwen2.5-0.5B-Instruct</h4>
+      <h4>Qwen2.5-1.5B-Instruct</h4>
       <p>
         A small general-purpose, instruction-following LLM from
-        <a href="https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct">Alibaba's Qwen team</a>.
+        <a href="https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct">Alibaba's Qwen team</a>.
         It wasn't trained for finance specifically — it answers in free text
         because it's a chat model, which is why this pipeline has to prompt
-        it and parse its reply instead of reading a label directly.
+        it and parse its reply instead of reading a label directly. The
+        smaller 0.5B checkpoint was tried first but mode-collapsed to a
+        literal "Neutral" reply on every headline regardless of content;
+        1.5B is the smallest size that actually discriminates.
       </p>
-      <span class="spec">500M params · Qwen/Qwen2.5-0.5B-Instruct · generative</span>
+      <span class="spec">1.5B params · Qwen/Qwen2.5-1.5B-Instruct · generative</span>
     </div>
   </div>
 

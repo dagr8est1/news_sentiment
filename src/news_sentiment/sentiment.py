@@ -3,7 +3,7 @@ from typing import Any, Callable
 from news_sentiment.models import Headline, ScoredHeadline
 
 FINBERT_MODEL = "ProsusAI/finbert"
-QWEN_MODEL = "Qwen/Qwen2.5-0.5B-Instruct"
+QWEN_MODEL = "Qwen/Qwen2.5-1.5B-Instruct"
 
 _LABEL_SCORES = {"positive": 1, "neutral": 0, "negative": -1}
 
