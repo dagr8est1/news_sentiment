@@ -171,7 +171,6 @@
     gap: 6px;
   }
   .card .ticker-block {
-    flex: 1;
     min-width: 0;
     overflow: hidden;
   }
@@ -420,7 +419,18 @@
     ticker.rel = "noopener";
     ticker.textContent = item.ticker;
     tickerBlock.appendChild(ticker);
+    header.appendChild(tickerBlock);
 
+    const price = document.createElement("div");
+    price.className = "price";
+    price.textContent = fmtPrice(item.price);
+    header.appendChild(price);
+
+    card.appendChild(header);
+
+    // Its own full-width row (sibling of header, not nested in tickerBlock)
+    // so the earnings badge lines up with price's right edge, not just
+    // ticker-block's narrower column.
     const subtitleRow = document.createElement("div");
     subtitleRow.className = "subtitle-row";
 
@@ -436,16 +446,7 @@
       subtitleRow.appendChild(earningsBadge);
     }
 
-    tickerBlock.appendChild(subtitleRow);
-
-    header.appendChild(tickerBlock);
-
-    const price = document.createElement("div");
-    price.className = "price";
-    price.textContent = fmtPrice(item.price);
-    header.appendChild(price);
-
-    card.appendChild(header);
+    card.appendChild(subtitleRow);
 
     const row = document.createElement("div");
     row.className = "card-row";
