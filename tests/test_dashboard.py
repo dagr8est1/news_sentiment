@@ -1,4 +1,5 @@
 import json
+from datetime import date
 
 from news_sentiment.dashboard import (
     COMPANY_NAMES,
@@ -41,6 +42,14 @@ class _FakePriceSource:
         )
 
 
+class _FakeEarningsSource:
+    def __init__(self, dates_by_ticker=None):
+        self._dates_by_ticker = dates_by_ticker or {}
+
+    def fetch(self, ticker):
+        return self._dates_by_ticker.get(ticker)
+
+
 def _headline(ticker: str) -> Headline:
     return Headline(ticker=ticker, title="t", publisher=None, url=None, published_at=None)
 
@@ -60,7 +69,13 @@ def test_build_dashboard_data_includes_generated_at():
     scorer = _FakeScorer()
 
     data = build_dashboard_data(
-        [], [], news_source, scorer, _FakePriceSource(), generated_at="2026-11-07T00:00:00+00:00"
+        [],
+        [],
+        news_source,
+        scorer,
+        _FakePriceSource(),
+        _FakeEarningsSource(),
+        generated_at="2026-11-07T00:00:00+00:00",
     )
 
     assert data["generated_at"] == "2026-11-07T00:00:00+00:00"
@@ -76,6 +91,7 @@ def test_build_dashboard_data_scores_each_watchlist_stock():
         news_source,
         scorer,
         _FakePriceSource(),
+        _FakeEarningsSource(),
         generated_at="2026-11-07T00:00:00+00:00",
     )
 
@@ -91,6 +107,8 @@ def test_build_dashboard_data_scores_each_watchlist_stock():
             "change_1w": 0.02,
             "change_qtd": 0.03,
             "change_ytd": 0.04,
+            "earnings_date": None,
+            "earnings_soon": False,
         },
         {
             "ticker": "MSFT",
@@ -103,6 +121,8 @@ def test_build_dashboard_data_scores_each_watchlist_stock():
             "change_1w": 0.02,
             "change_qtd": 0.03,
             "change_ytd": 0.04,
+            "earnings_date": None,
+            "earnings_soon": False,
         },
     ]
 
@@ -112,7 +132,13 @@ def test_build_dashboard_data_falls_back_to_ticker_for_unknown_company_name():
     scorer = _FakeScorer(sentiment_score=1)
 
     data = build_dashboard_data(
-        ["ZZZZ"], [], news_source, scorer, _FakePriceSource(), generated_at="2026-11-07T00:00:00+00:00"
+        ["ZZZZ"],
+        [],
+        news_source,
+        scorer,
+        _FakePriceSource(),
+        _FakeEarningsSource(),
+        generated_at="2026-11-07T00:00:00+00:00",
     )
 
     assert data["stocks"][0]["company_name"] == "ZZZZ"
@@ -123,7 +149,13 @@ def test_build_dashboard_data_scores_each_sector_etf_with_its_name():
     scorer = _FakeScorer(sentiment_score=-1)
 
     data = build_dashboard_data(
-        [], ["XLK"], news_source, scorer, _FakePriceSource(), generated_at="2026-11-07T00:00:00+00:00"
+        [],
+        ["XLK"],
+        news_source,
+        scorer,
+        _FakePriceSource(),
+        _FakeEarningsSource(),
+        generated_at="2026-11-07T00:00:00+00:00",
     )
 
     assert data["sectors"] == [
@@ -140,6 +172,48 @@ def test_build_dashboard_data_scores_each_sector_etf_with_its_name():
             "change_ytd": 0.04,
         }
     ]
+
+
+def test_build_dashboard_data_flags_earnings_within_two_weeks():
+    news_source = _FakeNewsSource({"NVDA": [_headline("NVDA")]})
+    scorer = _FakeScorer()
+    # Matches NVDA's real-world earnings timing relative to this test's "today":
+    # 10 days out, inside the 2-week window but past the old 7-day one.
+    earnings_source = _FakeEarningsSource({"NVDA": date(2026, 11, 17)})
+
+    data = build_dashboard_data(
+        ["NVDA"],
+        [],
+        news_source,
+        scorer,
+        _FakePriceSource(),
+        earnings_source,
+        generated_at="2026-11-07T00:00:00+00:00",
+        today=date(2026, 11, 7),
+    )
+
+    assert data["stocks"][0]["earnings_date"] == "2026-11-17"
+    assert data["stocks"][0]["earnings_soon"] is True
+
+
+def test_build_dashboard_data_does_not_flag_earnings_too_far_out():
+    news_source = _FakeNewsSource({"AAPL": [_headline("AAPL")]})
+    scorer = _FakeScorer()
+    earnings_source = _FakeEarningsSource({"AAPL": date(2027, 1, 28)})
+
+    data = build_dashboard_data(
+        ["AAPL"],
+        [],
+        news_source,
+        scorer,
+        _FakePriceSource(),
+        earnings_source,
+        generated_at="2026-11-07T00:00:00+00:00",
+        today=date(2026, 11, 7),
+    )
+
+    assert data["stocks"][0]["earnings_date"] == "2027-01-28"
+    assert data["stocks"][0]["earnings_soon"] is False
 
 
 def test_save_dashboard_data_writes_readable_json(tmp_path):

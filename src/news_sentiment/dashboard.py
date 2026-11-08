@@ -1,7 +1,8 @@
 import json
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 
+from news_sentiment.earnings import EarningsSource, is_earnings_soon
 from news_sentiment.pipeline import NewsSource, Scorer, analyze_tickers
 from news_sentiment.prices import PriceSource
 
@@ -64,16 +65,31 @@ def _price_fields(price_source: PriceSource, ticker: str) -> dict:
     }
 
 
+EARNINGS_SOON_DAYS = 14
+
+
+def _earnings_fields(earnings_source: EarningsSource, ticker: str, today: date) -> dict:
+    """Fetch a ticker's next earnings date and flag whether it's within the next 2 weeks."""
+    earnings_date = earnings_source.fetch(ticker)
+    return {
+        "earnings_date": earnings_date.isoformat() if earnings_date else None,
+        "earnings_soon": is_earnings_soon(earnings_date, today, days=EARNINGS_SOON_DAYS),
+    }
+
+
 def build_dashboard_data(
     watchlist: list[str],
     sector_etfs: list[str],
     news_source: NewsSource,
     scorer: Scorer,
     price_source: PriceSource,
+    earnings_source: EarningsSource,
     count: int = 10,
     generated_at: str | None = None,
+    today: date | None = None,
 ) -> dict:
     """Score the watchlist and sector ETFs and build the dashboard's JSON payload."""
+    today = today or date.today()
     stock_ratings = analyze_tickers(watchlist, news_source, scorer, count=count)
     sector_ratings = analyze_tickers(sector_etfs, news_source, scorer, count=count)
 
@@ -87,6 +103,7 @@ def build_dashboard_data(
                 "avg_score": r.avg_score,
                 "num_headlines": len(r.scored_headlines),
                 **_price_fields(price_source, r.ticker),
+                **_earnings_fields(earnings_source, r.ticker, today),
             }
             for r in stock_ratings
         ],
