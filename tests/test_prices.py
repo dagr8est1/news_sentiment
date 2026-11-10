@@ -67,6 +67,29 @@ def test_compute_returns_is_none_when_no_history_reaches_back_far_enough():
     assert result.change_ytd is None
 
 
+def test_compute_returns_skips_a_trailing_nan_close():
+    closes = [
+        (date(2026, 11, 5), 100.0),
+        (date(2026, 11, 6), 110.0),
+        (date(2026, 11, 9), float("nan")),
+    ]
+    result = compute_returns("AAPL", closes)
+    assert result.price == 110.0
+    assert result.change_1d == pytest.approx(0.1)
+
+
+def test_compute_returns_skips_a_nan_close_in_the_middle_of_history():
+    closes = [
+        (date(2026, 11, 3), 90.0),
+        (date(2026, 11, 4), float("nan")),
+        (date(2026, 11, 5), 100.0),
+        (date(2026, 11, 6), 110.0),
+    ]
+    result = compute_returns("AAPL", closes)
+    assert result.price == 110.0
+    assert result.change_1d == pytest.approx(0.1)
+
+
 class _FakeHistoryProvider:
     def __init__(self, closes):
         self._closes = closes

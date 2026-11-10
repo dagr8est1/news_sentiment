@@ -1,6 +1,8 @@
 import json
+import math
 from datetime import date, datetime, timezone
 from pathlib import Path
+from typing import Any
 
 from news_sentiment.earnings import EarningsSource, is_earnings_soon
 from news_sentiment.pipeline import NewsSource, Scorer, analyze_tickers
@@ -121,7 +123,18 @@ def build_dashboard_data(
     }
 
 
+def _json_safe(value: Any) -> Any:
+    """Replace NaN/Infinity floats with None so the output is valid (spec-compliant) JSON."""
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
+    if isinstance(value, dict):
+        return {k: _json_safe(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_json_safe(v) for v in value]
+    return value
+
+
 def save_dashboard_data(data: dict, path: str | Path) -> None:
-    """Write the dashboard payload to `path` as indented JSON."""
+    """Write the dashboard payload to `path` as indented, spec-compliant JSON."""
     with Path(path).open("w") as f:
-        json.dump(data, f, indent=2)
+        json.dump(_json_safe(data), f, indent=2)

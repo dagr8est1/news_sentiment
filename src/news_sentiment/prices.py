@@ -1,3 +1,4 @@
+import math
 from dataclasses import dataclass
 from datetime import date, timedelta
 from typing import Callable, Protocol
@@ -40,6 +41,10 @@ def _quarter_start(d: date) -> date:
 
 def compute_returns(ticker: str, closes: list[tuple[date, float]]) -> PriceReturns:
     """Compute current price and 1D/1W/QTD/YTD returns from ascending (date, close) pairs."""
+    # yfinance occasionally reports a NaN close for a day (e.g. a still-settling
+    # intraday row), which would otherwise poison every return calculated off it.
+    closes = [(d, c) for d, c in closes if not math.isnan(c)]
+
     if not closes:
         return PriceReturns(
             ticker=ticker, price=0.0, change_1d=None, change_1w=None, change_qtd=None, change_ytd=None

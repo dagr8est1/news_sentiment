@@ -224,3 +224,18 @@ def test_save_dashboard_data_writes_readable_json(tmp_path):
 
     with path.open() as f:
         assert json.load(f) == data
+
+
+def test_save_dashboard_data_writes_nan_as_null_not_as_invalid_json(tmp_path):
+    data = {"generated_at": "2026-11-07T00:00:00+00:00", "stocks": [{"price": float("nan")}]}
+    path = tmp_path / "dashboard-data.json"
+
+    save_dashboard_data(data, path)
+
+    text = path.read_text()
+    assert "NaN" not in text
+    with path.open() as f:
+        assert json.load(f) == {
+            "generated_at": "2026-11-07T00:00:00+00:00",
+            "stocks": [{"price": None}],
+        }
